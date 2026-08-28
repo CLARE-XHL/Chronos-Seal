@@ -71,8 +71,8 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/CLARE-XHL/chronos-seal.git
-cd chronos-seal
+git clone https://github.com/CLARE-XHL/Chronos-Seal.git
+cd Chronos-Seal
 
 # 2. 安装 node-addon-api
 npm install node-addon-api
@@ -133,7 +133,7 @@ CHECKPOINT_WHITELIST 手动填写 7–12 个剧情节点标签，顺序即期望
 📂 目录结构
 
 ```
-chronos-seal/
+Chronos-Seal/
 ├── native/                          # Native 模块源码
 │   ├── binding.gyp                  # node-gyp 构建配置
 │   └── src/
