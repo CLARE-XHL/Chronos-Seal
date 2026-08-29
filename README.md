@@ -274,8 +274,23 @@ node-gyp build --release
 
 ```js
 var result = AuthManager.verifyAndDecrypt();
-if (!result.success) {
-    alert('授权失败，错误码：' + result.errorCode);
+
+if (result.success) {
+    // 验证通过，继续游戏
+    $gameSystem._authPassed = true;
+    $gameVariables.setValue(1, result.systemJson);
+} else {
+    var code = result.errorCode;
+    var msg = '';
+    if (code === 10) msg = '游戏版本已过期，请到Steam更新。';
+    else if (code === 20) msg = 'Steam账号不匹配，请使用购买游戏的账号登录。';
+    else if (code === 30) msg = '授权文件损坏，请重新安装游戏。';
+    else if (code === 31) msg = '系统时间异常，请同步时间后重试。';
+    else if (code === 40) msg = '游戏文件缺失，请验证游戏完整性或重装。';
+    else if (code === 50) msg = '请先启动Steam客户端。';
+    else msg = '授权失败，错误码: ' + code;
+    
+    alert(msg);
     SceneManager.exit();
 }
 ```
@@ -297,8 +312,18 @@ AuthManager.heartbeatReply();
 在地图转场、Boss 战前、存档、获得关键道具等位置插入：
 
 ```js
-if (!AuthManager.checkpointVerify('boss_battle_start')) {
-    $gamePlayer.reserveTransfer(999, 0, 0, 0);  // 传送至虚空
+if (!AuthManager.checkpointVerify('map_transition_005')) {
+    // 验证失败 → 优雅降级
+    // 
+    // ★ 注意：C++ 层已自动执行以下惩罚：
+    //   - 清空金钱（$gameParty._gold = 0）
+    //   - 传送回原点（_x = 0, _y = 0）
+    //   - 破坏关键开关 #1（$gameSwitches.setValue(1, false)）
+    //
+    // 以下为 JS 层额外惩罚（仅用于补充 C++ 未覆盖的逻辑）
+    
+    $gameParty.clear();                 // 清空队伍（C++ 未覆盖）
+    $gamePlayer.reserveTransfer(999, 0, 0, 0);  // 传送至虚空地图
 }
 ```
 
@@ -433,6 +458,7 @@ V1.1（2026-08-29）—— ADS 双存储防篡改增强
 · save_current_time_to_registry 内部同时处理注册表与 ADS 写入，保持双写一致性
 · 时间存储从“单点可删”升级为“双存储自修复”，删注册表或删 ADS 均可由另一方自动补回
 · 移除独立的 PDF 白皮书，所有设计原理、架构、工作流、部署指南等全部整合进 README
+· 完善示例代码，增加 ERR_NO_RES(40) 错误码处理，补充 C++ 自动惩罚的注释说明
 
 V1.0（2026-08-28）—— 初始稳定版
 
