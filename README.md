@@ -7,9 +7,9 @@
 [![Platform](https://img.shields.io/badge/platform-NW.js%20%7C%20RPG%20Maker%20MV%2FMZ-blue)](https://nwjs.io/)
 [![C++](https://img.shields.io/badge/C%2B%2B-11-blue.svg)](https://isocpp.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2-red.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.1-red.svg)](CHANGELOG.md)
 
-> **V1.2 核心改进：彻底消除 system.json 明文裸奔漏洞，发行包内只有加密文件，玩家首次启动时自动解密。**
+> **V1.2.1 补丁说明：修复 encrypt.bat 脚本目录缺失问题，首次激活增加原子性保护（备份与回滚），build.bat 支持 HARD_EXPIRE 日期输入。**
 
 **Chronos Seal** 是一套专为 RPG Maker MV / MZ（NW.js 环境）设计的**无服务器运行时完整性保护方案**。通过 C++ Native 层实现身份锚定、时间炸弹、行为检查点与看门狗守护，将批量盗版与简易破解的成本提升至远超游戏本身价值。
 
@@ -19,25 +19,17 @@
 
 **序言**：该项目完全开源免费（MIT License），欢迎各路 RM 作者直接拿去用，也欢迎各路破解者前来尝试并提交 Issue —— 你破得越深，我补得越快，这套系统就会越强，这也算是我给 RM 圈的一份 Liberty。
 
----
 
 ## ✨ 特性
 
-🔐 **原生层信任根**：核心解密逻辑在 C++ 编译二进制（.node）中，JS 层无密钥，F12 控制台捞不到
-
-🆔 **Steam 身份锚定**：通过 Steam SDK 读取用户 UID，HMAC-SHA256 签名绑定，多采样抗 Hook
-
-💣 **时间自毁机制**：硬编码截止时间戳 + 注册表与 NTFS ADS 双存储防回拨，旧版自动失效
-
-🧩 **行为检查点矩阵**：7-12 个 HMAC 单向哈希链检查点，与游戏剧情耦合，失败时触发优雅降级
-
-🐕 **看门狗守护线程**：独立系统级线程，10 秒超时，连续 2 次无心跳强制退出，封堵 CE 挂起调试
-
-🔒 **发行包预加密（V1.2）**：打包前加密 system.json，发行包内无明文，彻底堵死解包即玩
-
-🔑 **一机一密（V1.2）**：每位玩家首次启动后，system.json 用其专属密钥重新加密，破解无法泛化
-
-🛡️ **双存储防篡改（V1.1）**：注册表 + NTFS ADS 双存储交叉校验，防时间回拨与关键数据清除
+- **🔐 原生层信任根**：核心解密逻辑在 C++ 编译二进制（.node）中，JS 层无密钥，F12 控制台捞不到
+- **🆔 Steam 身份锚定**：通过 Steam SDK 读取用户 UID，HMAC-SHA256 签名绑定，多采样抗 Hook
+- **💣 时间自毁机制**：硬编码截止时间戳 + 注册表与 NTFS ADS 双存储防回拨，旧版自动失效
+- **🧩 行为检查点矩阵**：7-12 个 HMAC 单向哈希链检查点，与游戏剧情耦合，失败时触发优雅降级
+- **🐕 看门狗守护线程**：独立系统级线程，10 秒超时，连续 2 次无心跳强制退出，封堵 CE 挂起调试
+- **🔒 发行包预加密**：打包前加密 system.json，发行包内无明文，彻底堵死解包即玩
+- **🔑 一机一密**：每位玩家首次启动后，system.json 用其专属密钥重新加密，破解无法泛化
+- **🛡️ 双存储防篡改**：注册表 + NTFS ADS 双存储交叉校验，防时间回拨与关键数据清除
 
 
 ## 📁 文件结构
@@ -73,7 +65,6 @@
 
 ```
 
----
 
 ## 🚀 快速开始（小白版）
 
@@ -82,16 +73,16 @@
 ### 准备工作
 
 **你需要准备：**
-1. **Steamworks SDK**（从 Valve 官网下载，需要 Steam 合作伙伴账号）
-2. **Node.js**（从 nodejs.org 下载安装，用于编译 C++ 插件）
-3. **OpenSSL 开发库**（编译时需要）
+- Steamworks SDK（从 Valve 官网下载，需要 Steam 合作伙伴账号）
+- Node.js（从 nodejs.org 下载安装，用于编译 C++ 插件）
+- OpenSSL 开发库（编译时需要）
 
 **时间预估：** 首次配置约 30-60 分钟，之后每次打包约 5 分钟。
 
 
 ### 第一步：放置文件
 
-#### 1.1 创建 `native/` 目录
+#### 1.1 创建 native/ 目录
 
 在你的游戏工程根目录下，新建一个 `native` 文件夹。
 
@@ -144,18 +135,7 @@
 
 ⚠️ 如果路径不对，编译时会报错：fatal error: steam/steam_api.h: No such file or directory
 
-如果编译时提示找不到 steam_api 库，取消 libraries 中对应行的注释：
-
-```json
-"libraries": [
-    "-lssl",
-    "-lcrypto",
-    "-L D:/dev/steamworks_sdk/redistributable_bin/win64",
-    "-lsteam_api64"
-]
-```
-
-根据你的电脑系统选择：
+如果编译时提示找不到 steam_api 库，取消 libraries 中对应行的注释，并改为你的实际路径：
 
 · 64 位系统 → 用 win64 + -lsteam_api64
 · 32 位系统 → 用 win32 + -lsteam_api
@@ -169,6 +149,7 @@
 ```
 请输入游戏版本号（如 1.0.0）: 1.0.0
 请输入发行日期（YYYY-MM-DD）: 2026-08-30
+请输入时间炸弹截止日期（YYYY-MM-DD，回车默认 2027-01-01）: 2027-01-01
 请输入游戏名称（用于注册表路径，如 MyGame）: MyGame
 ```
 
@@ -176,10 +157,10 @@
 
 脚本会自动完成以下工作：
 
-1. 扫描 data/ 目录下的所有地图文件
-2. 自动生成检查点列表
-3. 生成 native/src/config.h
-4. 编译 decryptor.node
+· 扫描 data/ 目录下的所有地图文件
+· 自动生成检查点列表
+· 生成 native/src/config.h
+· 编译 decryptor.node
 
 3.3 查看 build_info.txt
 
@@ -187,7 +168,7 @@
 
 ```
 ============================================================
-  Chronos Seal V1.2 - 检查点植入指南
+  Chronos Seal V1.2.1 - 检查点植入指南
 ============================================================
 
   [检查点植入位置]
@@ -281,13 +262,13 @@ AuthManager.heartbeatReply();
 
 第六步：运行 RPG Maker 编辑器部署
 
-在 RPG Maker 编辑器中，点击文件 → 部署，选择目标平台（Windows），输入素材加密密钥（随便填，RPG Maker 自己的加密），生成发行版。
+在 RPG Maker 编辑器中，点击 文件 → 部署，选择目标平台（Windows），输入素材加密密钥（随便填，RPG Maker 自己的加密），生成发行版。
 
 部署完成后，你会得到一个包含 www/ 目录的发行包文件夹。
 
 第七步：修改发行包中的 index.html（必须）
 
-⚠️ 重要：index.html 的修改必须在 RPG Maker 编辑器部署完成后，在发行包目录中进行！不要在工程文件里修改！
+⚠️ 重要： index.html 的修改必须在 RPG Maker 编辑器部署完成后，在发行包目录中进行！不要在工程文件里修改！
 
 7.1 找到发行包中的 index.html
 
@@ -307,7 +288,7 @@ AuthManager.heartbeatReply();
 
 用 Notepad++、VS Code 或任意文本编辑器打开 index.html。
 
-7.5 修改 <title> 标签
+7.5 修改 title 标签
 
 找到这一行：
 
@@ -377,6 +358,7 @@ build.bat 输入参数
 
 · 游戏版本号：游戏当前版本，用于派生发行密钥。示例：1.0.0
 · 发行日期：游戏发行日期，用于派生发行密钥。示例：2026-08-30
+· 时间炸弹截止日期：游戏停止运行的时间点，默认 2027-01-01
 · 游戏名称：用于生成注册表路径。示例：MyGame
 
 注册表路径规则：SOFTWARE\游戏名称\ChronosSeal
@@ -400,108 +382,101 @@ config.h 参数（由 build.bat 自动生成，一般不需要手动修改）
 
 📊 错误码速查
 
-错误码 10 — ERR_EXPIRED
-游戏版本已过期，请到 Steam 更新。
-
-错误码 20 — ERR_ID_MISMATCH
-Steam 账号不匹配，请使用购买游戏的账号登录。
-
-错误码 30 — ERR_SIGNATURE
-授权文件损坏，请重新安装游戏。
-
-错误码 31 — ERR_TIME_TAMPER
-系统时间异常，请同步时间后重试。
-
-错误码 40 — ERR_NO_RES
-游戏文件缺失，请验证游戏完整性或重装。
-
-错误码 50 — ERR_NO_STEAM
-请先启动 Steam 客户端。
-
-错误码 -1 — ERR_UNKNOWN
-授权失败，请联系开发者（错误码: -1）。
+· 错误码 10 — ERR_EXPIRED：游戏版本已过期，请到 Steam 更新。
+· 错误码 20 — ERR_ID_MISMATCH：Steam 账号不匹配，请使用购买游戏的账号登录。
+· 错误码 30 — ERR_SIGNATURE：授权文件损坏，请重新安装游戏。
+· 错误码 31 — ERR_TIME_TAMPER：系统时间异常，请同步时间后重试。
+· 错误码 40 — ERR_NO_RES：游戏文件缺失，请验证游戏完整性或重装。
+· 错误码 50 — ERR_NO_STEAM：请先启动 Steam 客户端。
+· 错误码 -1 — ERR_UNKNOWN：授权失败，请联系开发者。
 
 📋 开发者部署检查清单
 
 阶段一：环境配置
 
-☐ 已安装 Node.js
-☐ 已安装 OpenSSL 开发库
-☐ 已下载 Steamworks SDK
-☐ binding.gyp 中的 Steamworks SDK 路径已修改
+· 已安装 Node.js
+· 已安装 OpenSSL 开发库
+· 已下载 Steamworks SDK
+· binding.gyp 中的 Steamworks SDK 路径已修改
 
 阶段二：文件放置
 
-☐ auth_manager.js 已放入 js/plugins/ 目录
-☐ 已在 RPG Maker 插件管理器中启用 auth_manager.js
-☐ decryptor.cc 已放入 native/src/
-☐ binding.gyp 已放入 native/
-☐ build.bat 已放入工程根目录
-☐ encrypt.bat 已放入工程根目录
+· auth_manager.js 已放入 js/plugins/ 目录
+· 已在 RPG Maker 插件管理器中启用 auth_manager.js
+· decryptor.cc 已放入 native/src/
+· binding.gyp 已放入 native/
+· build.bat 已放入工程根目录
+· encrypt.bat 已放入工程根目录
 
 阶段三：配置与编译
 
-☐ 运行 build.bat 输入了正确的版本号、日期、游戏名
-☐ decryptor.node 编译成功
-☐ build_info.txt 已生成
+· 运行 build.bat 输入了正确的版本号、日期、游戏名
+· decryptor.node 编译成功
+· build_info.txt 已生成
 
 阶段四：代码植入
 
-☐ 已根据 build_info.txt 在对应地图的转场事件中植入检查点
-☐ 已在公共事件中配置启动验证
-☐ 已配置定时心跳（每 3-5 秒）
+· 已根据 build_info.txt 在对应地图的转场事件中植入检查点
+· 已在公共事件中配置启动验证
+· 已配置定时心跳（每 3-5 秒）
 
 阶段五：部署与加密
 
-☐ 已运行 RPG Maker 编辑器部署
-☐ 已在发行包目录中修改 index.html 的 <title> 标签
-☐ decryptor.node 已复制到发行包目录
-☐ encrypt_config.json 已复制到发行包目录
-☐ 已运行 encrypt.bat
-☐ system.json.enc 已成功生成
-☐ 明文 system.json 已自动删除
-☐ encrypt_config.json 已自动删除（用完即焚）
-☐ encrypt.bat 已从发行包目录删除
+· 已运行 RPG Maker 编辑器部署
+· 已在发行包目录中修改 index.html 的 title 标签
+· decryptor.node 已复制到发行包目录
+· encrypt_config.json 已复制到发行包目录
+· 已运行 encrypt.bat
+· system.json.enc 已成功生成
+· 明文 system.json 已自动删除
+· encrypt_config.json 已自动删除
+· encrypt.bat 已从发行包目录删除
 
 阶段六：打包
 
-☐ 发行包中只有 system.json.enc，没有明文 system.json
-☐ 已准备好打包 Steam 版本
+· 发行包中只有 system.json.enc，没有明文 system.json
+· 已准备好打包 Steam 版本
 
 📋 更新日志
 
+V1.2.1（2026-08-30）—— 补丁发布
+
+· 修复 encrypt.bat 脚本目录不存在时执行失败的问题
+· 首次激活增加原子性保护：先备份原文件 → 写入 auth.key → 确认成功后再覆写 system.json.enc → 失败时自动回滚
+· build.bat 增加 HARD_EXPIRE 日期输入，用户可自定义时间炸弹截止日期
+
 V1.2（2026-08-30）—— 预加密 + 一机一密 + 自动化构建
 
-· 新增：build.bat 打包前自动化构建工具
-· 新增：encrypt.bat 部署后 system.json 加密工具
-· 新增：index.html 启动劫持，引擎读取文件前完成解密
-· 新增：预加密机制，发行包内无明文 system.json
-· 新增：派生密钥机制，每位玩家专属密钥
-· 新增：首次激活流程，发行密钥解密 → 用户密钥重加密
-· 新增：encrypt_config.json 配置传递
-· 优化：明文 system.json 用完即焚（内存中瞬态存在）
-· 优化：StorageManager.loadFromFile 劫持，用完即焚
-· 安全：encrypt_config.json 加密完成后自动删除（用完即焚）
+· 新增 build.bat 打包前自动化构建工具
+· 新增 encrypt.bat 部署后 system.json 加密工具
+· 新增 index.html 启动劫持，引擎读取文件前完成解密
+· 新增预加密机制，发行包内无明文 system.json
+· 新增派生密钥机制，每位玩家专属密钥
+· 新增首次激活流程，发行密钥解密 → 用户密钥重加密
+· 新增 encrypt_config.json 配置传递
+· 优化明文 system.json 用完即焚（内存中瞬态存在）
+· 优化 StorageManager.loadFromFile 劫持，用完即焚
+· 安全加密完成后 encrypt_config.json 自动删除
 
 V1.1（2026-08-29）—— ADS 双存储防篡改增强
 
-· 新增：NTFS 备用数据流（ADS）作为第三隐性存储
-· 增强：verify_time 升级为注册表 + ADS 双源交叉校验
-· 修复：GenerateFirstTimeAuth 执行顺序
-· 优化：save_current_time_to_registry 内部同时处理注册表与 ADS 写入
-· 安全：时间存储从“单点可删”升级为“双存储自修复”
+· 新增 NTFS 备用数据流（ADS）作为第三隐性存储
+· 增强 verify_time 升级为注册表 + ADS 双源交叉校验
+· 修复 GenerateFirstTimeAuth 执行顺序
+· 优化 save_current_time_to_registry 内部同时处理注册表与 ADS 写入
+· 安全时间存储从“单点可删”升级为“双存储自修复”
 
 V1.0（2026-08-28）—— 初始稳定版
 
-· 新增：三层防御体系（L1 C++ 信任根 + L2 JS 胶水层 + L3 行为验证层）
-· 新增：Steam 身份锚定，HMAC-SHA256 签名绑定 UID，多采样抗 Hook
-· 新增：时间自毁机制，硬编码截止时间戳 + 注册表防回拨
-· 新增：资源加密锁，AES-256-CBC 加密 system.json，C++ 内存解密
-· 新增：行为检查点矩阵，单向 HMAC 哈希链
-· 新增：看门狗守护线程，独立系统级线程
-· 新增：安全落盘机制，覆写原文件为全 0 并校验
-· 安全：新增 .overwrite_failed 覆写失败持久化标记
-· 安全：新增看门狗日志编译宏 WATCHDOG_LOGGING
+· 新增三层防御体系（L1 C++ 信任根 + L2 JS 胶水层 + L3 行为验证层）
+· 新增 Steam 身份锚定，HMAC-SHA256 签名绑定 UID，多采样抗 Hook
+· 新增时间自毁机制，硬编码截止时间戳 + 注册表防回拨
+· 新增资源加密锁，AES-256-CBC 加密 system.json，C++ 内存解密
+· 新增行为检查点矩阵，单向 HMAC 哈希链
+· 新增看门狗守护线程，独立系统级线程
+· 新增安全落盘机制，覆写原文件为全 0 并校验
+· 安全新增 .overwrite_failed 覆写失败持久化标记
+· 安全新增看门狗日志编译宏 WATCHDOG_LOGGING
 
 ⚠️ 常见问题
 
@@ -521,9 +496,9 @@ Q: 运行游戏时提示“AuthManager 未定义”？
 
 A: 可能的原因：
 
-1. auth_manager.js 没有放在 js/plugins/ 目录下
-2. 没有在 RPG Maker 插件管理器中启用 auth_manager.js
-3. decryptor.node 没有被正确加载（检查是否在发行包目录中）
+· auth_manager.js 没有放在 js/plugins/ 目录下
+· 没有在 RPG Maker 插件管理器中启用 auth_manager.js
+· decryptor.node 没有被正确加载（检查是否在发行包目录中）
 
 Q: 运行游戏时提示“授权失败，错误码: 50”？
 
@@ -561,7 +536,7 @@ A: 因为工程里的 index.html 会在部署时被覆盖。请在部署完成�
 
 本项目采用 MIT 许可证，详见 LICENSE 文件。
 
-注意： 本方案仅提供技术框架，使用者需自行确保遵循 Steam 平台及各国法律合规要求。
+注意：本方案仅提供技术框架，使用者需自行确保遵循 Steam 平台及各国法律合规要求。
 
 🙏 致谢
 
@@ -574,6 +549,6 @@ A: 因为工程里的 index.html 会在部署时被覆盖。请在部署完成�
 · 作者：CLARE-XHL
 · 项目地址：https://github.com/CLARE-XHL/Chronos-Seal
 
----
-
 ⭐ 如果这个项目对你有帮助，请给一个 Star，让更多独立开发者看到！
+
+```
