@@ -47,7 +47,8 @@
 │   └── system.json                    ← 明文（开发时保留，发行前加密）
 │
 ├── js/                                ← RPG Maker 脚本目录（已有）
-│   ├── auth_manager.js               ← 【需要放】Chronos Seal JS 胶水层
+│   ├── plugins/                       ← RPG Maker 插件目录（已有）
+│   │   └── auth_manager.js           ← 【需要放】Chronos Seal JS 胶水层
 │   └── plugins.js                    ← 你的插件列表（已有）
 │
 ├── native/                            ← 【需要创建】Chronos Seal C++ 源码目录
@@ -58,7 +59,7 @@
 │   │   └── decryptor.node            ← 编译产物
 │   └── binding.gyp                   ← 编译配置文件
 │
-├── index.html                         ← 【需要修改】游戏入口文件
+├── index.html                         ← 【部署后修改】游戏入口文件
 ├── game.rpgproject                   ← RPG Maker 工程文件
 ├── build.bat                         ← 【需要放】打包前运行
 ├── encrypt.bat                       ← 【需要放】部署后运行
@@ -68,7 +69,7 @@
 
 ---
 
-## 🚀 快速开始
+## 🚀 快速开始（小白版）
 
 > **⚠️ 注意：以下步骤按顺序执行，不要跳步。**
 
@@ -99,11 +100,23 @@
 
 #### 1.3 放置 JS 插件
 
-把 `auth_manager.js` 放到 `js/` 目录下。
+把 `auth_manager.js` 放到 `js/plugins/` 目录下。
 
-> ⚠️ **注意：** 不要放在 `js/libs/` 或子文件夹中，直接放在 `js/` 下。
+> ⚠️ **注意：**
+> - `auth_manager.js` **必须**放在 `js/plugins/` 下，不能放在 `js/` 根目录或其他子文件夹中。
+> - 如果 `js/plugins/` 文件夹不存在，请手动创建。
 
-#### 1.4 放置构建脚本
+#### 1.4 在插件管理器中启用
+
+1. 打开 RPG Maker 编辑器
+2. 点击菜单栏的 **工具 → 插件管理**
+3. 在插件列表中找到 `auth_manager.js`
+4. **双击**它，或者勾选左侧的复选框，启用该插件
+5. 点击 **确定** 保存
+
+> ⚠️ **如果不启用插件，游戏运行时 `AuthManager` 会报“未定义”错误。**
+
+#### 1.5 放置构建脚本
 
 把以下文件放在游戏工程根目录：
 - `build.bat`
@@ -145,27 +158,9 @@
 
 ---
 
-第三步：修改 index.html（必须）
+第三步：运行 build.bat（打包前）
 
-打开游戏工程根目录的 index.html，找到 <title> 标签：
-
-```html
-<title>改这里！</title>
-```
-
-改成你的游戏名称：
-
-```html
-<title>我的游戏名称</title>
-```
-
-⚠️ 如果不改，玩家看到的窗口标题会是“改这里！”
-
----
-
-第四步：运行 build.bat（打包前）
-
-4.1 双击 build.bat
+3.1 双击 build.bat
 
 在弹出的命令行窗口中，依次输入：
 
@@ -175,7 +170,7 @@
 请输入游戏名称（用于注册表路径，如 MyGame）: MyGame
 ```
 
-4.2 等待自动完成
+3.2 等待自动完成
 
 脚本会自动完成以下工作：
 
@@ -184,7 +179,7 @@
 3. 生成 native/src/config.h
 4. 编译 decryptor.node
 
-4.3 查看 build_info.txt
+3.3 查看 build_info.txt
 
 编译完成后，根目录会生成一个 build_info.txt 文件。打开它，你会看到类似这样的内容：
 
@@ -206,19 +201,19 @@
 
 ---
 
-第五步：植入检查点（手动操作）
+第四步：植入检查点（手动操作）
 
 根据 build_info.txt 的提示，在对应地图的转场事件中插入检查点调用。
 
-5.1 打开 RPG Maker 编辑器
+4.1 打开 RPG Maker 编辑器
 
 打开你的游戏工程。
 
-5.2 找到对应地图
+4.2 找到对应地图
 
 比如 build_info.txt 提示你需要在地图 Map005.json 中植入检查点。
 
-5.3 在转场事件中插入脚本
+4.3 在转场事件中插入脚本
 
 在地图切换的事件中，插入一个脚本指令，内容为：
 
@@ -231,7 +226,7 @@ if (!AuthManager.checkpointVerify('map_transition_005')) {
 }
 ```
 
-5.4 重复操作
+4.4 重复操作
 
 对 build_info.txt 中列出的每个地图，重复以上操作。
 
@@ -239,13 +234,13 @@ if (!AuthManager.checkpointVerify('map_transition_005')) {
 
 ---
 
-第六步：在公共事件中配置启动验证
+第五步：在公共事件中配置启动验证
 
-6.1 创建一个公共事件
+5.1 创建一个公共事件
 
 在 RPG Maker 编辑器中，新建一个公共事件，命名为 Auth_Init。
 
-6.2 插入启动验证脚本
+5.2 插入启动验证脚本
 
 在事件中插入一个脚本指令，内容为：
 
@@ -272,11 +267,11 @@ if (result.success) {
 }
 ```
 
-6.3 设置自动执行
+5.3 设置自动执行
 
 将这个公共事件设置为在游戏启动时自动执行（在 RPG Maker 的事件列表中，将其放在标题画面之前）。
 
-6.4 配置定时心跳
+5.4 配置定时心跳
 
 在游戏的一个并行处理公共事件中，每隔 3-5 秒调用：
 
@@ -288,11 +283,47 @@ AuthManager.heartbeatReply();
 
 ---
 
-第七步：运行 RPG Maker 编辑器部署
+第六步：运行 RPG Maker 编辑器部署
 
 在 RPG Maker 编辑器中，点击文件 → 部署，选择目标平台（Windows），输入素材加密密钥（随便填，RPG Maker 自己的加密），生成发行版。
 
 部署完成后，你会得到一个包含 www/ 目录的发行包文件夹。
+
+---
+
+第七步：修改发行包中的 index.html（必须）
+
+⚠️ 重要：index.html 的修改必须在 RPG Maker 编辑器部署完成后，在发行包目录中进行！不要在工程文件里修改！
+
+7.1 找到发行包中的 index.html
+
+在部署生成的发行包目录中（在www文件夹中），找到 index.html。
+
+⚠️ 不要修改工程根目录的 index.html，那个会在部署时被覆盖。
+
+删除自带的index.html文件，使用Chronos Seal所提供的index.html进行替换。
+
+7.2 用文本编辑器打开
+
+用 Notepad++、VS Code 或任意文本编辑器打开 index.html。
+
+7.3 修改 <title> 标签
+
+找到这一行：
+
+```html
+<title>改这里！</title>
+```
+
+改成你的游戏名称：
+
+```html
+<title>你的游戏名称</title>
+```
+
+7.4 保存文件
+
+保存后关闭编辑器。
 
 ---
 
@@ -314,9 +345,11 @@ AuthManager.heartbeatReply();
 1. 读取 encrypt_config.json 中的配置
 2. 加密 www/data/system.json → system.json.enc
 3. 校验加密文件是否成功生成
-4. 自动删除明文 system.json
+4. 自动删除明文 system.json 和encrypt_config.json
 
 ⚠️ 重要： 加密完成后，发行包中只有 system.json.enc，没有明文 system.json。
+
+5.删除encrypt.bat。
 
 ---
 
@@ -333,10 +366,11 @@ AuthManager.heartbeatReply();
 │   │   ├── system.json.enc      ← 加密文件（Chronos Seal 保护）
 │   │   └── Map*.json            ← 地图文件（明文，不影响）
 │   ├── js/
-│   │   └── auth_manager.js      ← Chronos Seal 插件
-│   └── ...
+│   │   ├── plugins/
+│   │   │   └── auth_manager.js  ← Chronos Seal 插件（已启用）
+│   │   └── plugins.js           ← 插件列表（已包含 auth_manager）
+│   └── index.html               ← 已修改标题
 ├── decryptor.node               ← Chronos Seal C++ 核心
-├── encrypt_config.json          ← 加密配置（首次启动后自动删除）
 └── Game.exe
 ```
 
@@ -359,10 +393,10 @@ binding.gyp 修改项
 Steamworks SDK 路径 你电脑上 Steamworks SDK 的 public 目录路径 D:/dev/steamworks_sdk/public
 库路径（可选） Steam API 库文件路径，编译报错时再改 -L D:/dev/steamworks_sdk/redistributable_bin/win64
 
-index.html 修改项
+index.html 修改项（部署后修改）
 
-配置项 说明
-<title> 标签 改为你的游戏名称
+配置项 说明 修改时机
+<title> 标签 改为你的游戏名称 部署完成后，在发行包目录中修改
 
 config.h 参数（由 build.bat 自动生成，一般不需要手动修改）
 
@@ -399,7 +433,8 @@ HARD_EXPIRE 时间炸弹截止时间戳 1767225600（2027-01-01）
 
 文件放置
 
-☐ auth_manager.js 已放入 js/ 目录
+☐ auth_manager.js 已放入 js/plugins/ 目录
+☐ 已在 RPG Maker 插件管理器中启用 auth_manager.js
 ☐ decryptor.cc 已放入 native/src/
 ☐ binding.gyp 已放入 native/
 ☐ build.bat 已放入工程根目录
@@ -420,6 +455,7 @@ HARD_EXPIRE 时间炸弹截止时间戳 1767225600（2027-01-01）
 部署与加密
 
 ☐ 已运行 RPG Maker 编辑器部署
+☐ 已在发行包目录中修改 index.html 的 <title> 标签
 ☐ decryptor.node 已复制到发行包目录
 ☐ encrypt_config.json 已复制到发行包目录
 ☐ 已运行 encrypt.bat
@@ -485,11 +521,11 @@ A: 需要在 binding.gyp 的 libraries 中添加库路径，取消对应注释�
 
 Q: 运行游戏时提示“AuthManager 未定义”？
 
-A: decryptor.node 没有被正确加载。请检查：
+A: 可能的原因：
 
-1. decryptor.node 是否在发行包目录中
-2. auth_manager.js 是否在 www/js/ 中
-3. index.html 是否正确引用了 auth_manager.js
+1. auth_manager.js 没有放在 js/plugins/ 目录下
+2. 没有在 RPG Maker 插件管理器中启用 auth_manager.js
+3. decryptor.node 没有被正确加载（检查是否在发行包目录中）
 
 Q: 运行游戏时提示“授权失败，错误码: 50”？
 
@@ -518,6 +554,10 @@ A: 建议 7-12 个。build.bat 会根据地图数量自动计算推荐值。
 Q: 植入检查点后，测试时自己触发检查点失败了怎么办？
 
 A: 开发测试阶段可以临时注释掉检查点代码，或直接在 build.bat 中减少检查点数量。正式发行前再恢复。
+
+Q: 我修改了工程里的 index.html，但部署后标题又变回“改这里！”了？
+
+A: 因为工程里的 index.html 会在部署时被覆盖。请在部署完成后，修改发行包目录中的 index.html，而不是工程里的。
 
 ---
 
