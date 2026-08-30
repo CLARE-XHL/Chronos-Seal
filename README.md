@@ -1,4 +1,3 @@
-```markdown
 # Chronos Seal
 
 **时序为封印 · 行为作密钥 · 岁月守护原创**
