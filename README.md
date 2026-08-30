@@ -550,5 +550,3 @@ A: 因为工程里的 index.html 会在部署时被覆盖。请在部署完成�
 · 项目地址：https://github.com/CLARE-XHL/Chronos-Seal
 
 ⭐ 如果这个项目对你有帮助，请给一个 Star，让更多独立开发者看到！
-
-```
