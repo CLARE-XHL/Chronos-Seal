@@ -7,11 +7,9 @@
 [![Platform](https://img.shields.io/badge/platform-NW.js%20%7C%20RPG%20Maker%20MV%2FMZ-blue)](https://nwjs.io/)
 [![C++](https://img.shields.io/badge/C%2B%2B-11-blue.svg)](https://isocpp.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.1-red.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.0-red.svg)](CHANGELOG.md)
 
-> **V1.2.1 补丁说明：修复 encrypt.bat 脚本目录缺失问题，首次激活增加原子性保护（备份与回滚），build.bat 支持 HARD_EXPIRE 日期输入。**
-
-**Chronos Seal** 是一套专为 RPG Maker MV / MZ（NW.js 环境）设计的**无服务器运行时完整性保护方案**。通过 C++ Native 层实现身份锚定、时间炸弹、行为检查点与看门狗守护，将批量盗版与简易破解的成本提升至远超游戏本身价值。
+---
 
 **适用场景**：定价 ¥12~¥60 的独立游戏，保护首发销售窗口期。
 
@@ -19,534 +17,202 @@
 
 **序言**：该项目完全开源免费（MIT License），欢迎各路 RM 作者直接拿去用，也欢迎各路破解者前来尝试并提交 Issue —— 你破得越深，我补得越快，这套系统就会越强，这也算是我给 RM 圈的一份 Liberty。
 
+---
 
-## ✨ 特性
+## 设计哲理
 
-- **🔐 原生层信任根**：核心解密逻辑在 C++ 编译二进制（.node）中，JS 层无密钥，F12 控制台捞不到
-- **🆔 Steam 身份锚定**：通过 Steam SDK 读取用户 UID，HMAC-SHA256 签名绑定，多采样抗 Hook
-- **💣 时间自毁机制**：硬编码截止时间戳 + 注册表与 NTFS ADS 双存储防回拨，旧版自动失效
-- **🧩 行为检查点矩阵**：7-12 个 HMAC 单向哈希链检查点，与游戏剧情耦合，失败时触发优雅降级
-- **🐕 看门狗守护线程**：独立系统级线程，10 秒超时，连续 2 次无心跳强制退出，封堵 CE 挂起调试
-- **🔒 发行包预加密**：打包前加密 system.json，发行包内无明文，彻底堵死解包即玩
-- **🔑 一机一密**：每位玩家首次启动后，system.json 用其专属密钥重新加密，破解无法泛化
-- **🛡️ 双存储防篡改**：注册表 + NTFS ADS 双存储交叉校验，防时间回拨与关键数据清除
+Chronos Seal 不追求绝对不可破解——那在客户端环境中不存在。它追求的是：让破解的成本（时间、技术门槛、维护负担）远超游戏本身的价值，从而在经济学层面阻止盗版传播。
 
+- 经济学博弈：本地不存在绝对不可破解的加密。本方案旨在将破解成本（时间、技术门槛）提升至远超游戏售价，保护独立游戏首发的“黄金两周”。
+- 版本迭代即“时间炸弹”：不硬编码时间戳，利用“玩家只需更新，破解者必须重逆”的版本差，直接耗尽盗版传播者的精力。
+- 零信任、零知识：工具作者和平台不接触、不存储任何用户的密钥。彻底自证清白，杜绝“后门”嫌疑。
+- 完全可逆（防误杀）：只加密发行包，绝不修改工程文件。开发者想卸载防破解，删几行代码即可，毫无残留。
 
-## 📁 文件结构
+---
 
-下载 Chronos Seal 后，你需要在游戏工程中放置以下文件：
+## V2.0 已发布
 
-```
+V2.0 是一次彻底的重构，目标只有一个：让所有 RM 开发者都能用上，无论你的游戏是否上架 Steam。
 
-你的游戏工程根目录/
-├── data/                              ← RPG Maker 数据目录（已有）
-│   ├── Map001.json                    ← 你的地图文件
-│   ├── Map002.json                    ← 你的地图文件
-│   └── system.json                    ← 明文（开发时保留，发行前加密）
-│
-├── js/                                ← RPG Maker 脚本目录（已有）
-│   ├── plugins/                       ← RPG Maker 插件目录（已有）
-│   │   └── auth_manager.js           ← 【需要放】Chronos Seal JS 胶水层
-│   └── plugins.js                     ← 你的插件列表（已有）
-│
-├── native/                            ← 【需要创建】Chronos Seal C++ 源码目录
-│   ├── src/
-│   │   ├── decryptor.cc              ← C++ 核心源码
-│   │   └── config.h                  ← 由 build.bat 自动生成
-│   ├── build/Release/
-│   │   └── decryptor.node            ← 编译产物
-│   └── binding.gyp                   ← 编译配置文件
-│
-├── index.html                         ← 【部署后修改】游戏入口文件
-├── game.rpgproject                    ← RPG Maker 工程文件
-├── build.bat                         ← 【需要放】打包前运行
-├── encrypt.bat                       ← 【需要放】部署后运行
-└── encrypt_config.json               ← 由 build.bat 自动生成（加密后自动删除）
+V2.0 核心升级：
+- 彻底移除 Steam SDK 依赖：不再强制要求 Steam 账号和 SDK，任何 RM 游戏都能用
+- 彻底移除本地编译环境：不需要安装 Node.js、Python、MSVC、OpenSSL —— 一个都不需要
+- 云端编译（GitHub Actions）：Fork 模板仓库 → 填写参数 → 自动编译 → 下载成品
+- 零知识设计：密钥只在用户自己的 GitHub Actions 中生成，作者不接触、不存储
+- 完全可逆：加密只针对发行包，工程文件零修改，一键脱壳
 
-```
+---
 
+## 特性
 
-## 🚀 快速开始（小白版）
+- 原生层信任根：核心解密逻辑在 C++ 编译二进制（.node）中，JS 层无密钥，F12 控制台捞不到
+- 行为检查点矩阵：7-12 个检查点与游戏剧情耦合，失败时触发优雅降级（金钱清零、传送虚空）
+- 看门狗守护线程：独立系统级线程，10 秒超时，连续 2 次无心跳强制退出，封堵 CE 挂起调试
+- 发行包预加密：打包前加密 system.json，发行包内无明文，彻底堵死解包即玩
+- 云端编译（V2.0 新增）：无需本地编译环境，GitHub Actions 一键生成专属 .node
+- 不依赖任何外部平台（V2.0 新增）：Steam 游戏能用，免费游戏也能用
 
-> **⚠️ 注意：以下步骤按顺序执行，不要跳步。**
+---
 
-### 准备工作
+## 快速开始
 
-**你需要准备：**
-- Steamworks SDK（从 Valve 官网下载，需要 Steam 合作伙伴账号）
-- Node.js（从 nodejs.org 下载安装，用于编译 C++ 插件）
-- OpenSSL 开发库（编译时需要）
+V2.0 的使用流程非常简单，全程不需要安装任何编译工具。
 
-**时间预估：** 首次配置约 30-60 分钟，之后每次打包约 5 分钟。
+你需要准备：
+- 一个 GitHub 账号
+- 你的 RPG Maker 游戏工程
 
+### 第一步：下载 Chronos Seal V2.0 发行包
 
-### 第一步：放置文件
+从 [Releases](https://github.com/CLARE-XHL/Chronos-Seal/releases) 页面下载最新版，解压后得到：
+- ChronosScan.bat（本地扫描器）
+- auth_manager.js（JS 插件）
+- index.html（启动劫持模板）
 
-#### 1.1 创建 native/ 目录
+### 第二步：运行扫描器，植入检查点，启用插件
 
-在你的游戏工程根目录下，新建一个 `native` 文件夹。
+1. 将 ChronosScan.bat 放入你的游戏工程根目录
+2. 双击运行，脚本会自动扫描所有地图，生成：
+   - checkpoints_guide.txt —— 检查点植入说明书（给人看）
+   - config.h —— 检查点白名单（给机器编译用）
+3. 打开 checkpoints_guide.txt，在对应地图的转场事件中插入检查点代码
+4. 将 auth_manager.js 放入 js/plugins/ 目录
+5. 在 RPG Maker 插件管理器中启用 auth_manager.js
 
-#### 1.2 放置 C++ 源文件
+### 第三步：打包游戏，生成发行包，备份原文件
 
-把以下文件放到 `native/src/` 目录下：
-- `decryptor.cc`（Chronos Seal 核心源码）
-- `binding.gyp`（编译配置文件）
+1. 在 RPG Maker 编辑器中点击 文件 → 部署
+2. 选择目标平台（Windows），勾选对音频和图像加密并填写密钥，生成发行包
+3. 打包完成后，你会得到一个包含 www/ 目录的发行包文件夹
 
-> ⚠️ **注意：** 如果 `native/src/` 目录不存在，请手动创建。
+> ⚠️ 在继续下一步之前，先备份发行包中的两个原始文件：
+> - `www/index.html`（原始入口文件）
+> - `data/system.json`（明文配置文件）
+> 
+> 在工程根目录下（注意不是在你的发行包根目录下，正常来说你的工程文件应该在文档的Games文件夹下，而发行包在你文档的Output文件夹下）新建 `_chronos_backup/` 文件夹，将这两个文件复制进去。这样调试或回退时可以直接恢复。
 
-#### 1.3 放置 JS 插件
+### 第四步：云端编译
 
-把 `auth_manager.js` 放到 `js/plugins/` 目录下。
+1. Fork [Chronos-Builder-Template](https://github.com/CLARE-XHL/Chronos-Builder-Template) 到你的 GitHub 账户（必须设为私有）
+2. 将 config.h 和游戏工程中的 data/system.json（明文）上传到仓库根目录
+3. 在仓库页面点击 Actions → Build Chronos Seal → Run workflow
+4. 填写参数：
+   - 游戏名称（如 MyGame）
+   - 游戏版本号（如 1.0.0）
+   - 截止日期（留空则永不过期）
+5. 等待 2-3 分钟，下载 chronos-seal-output.zip
+6. 解压得到：decryptor.node、system.json.enc、author_secret.txt
+7. 将 author_secret.txt 离线保存，绝对不要放进游戏包！
+8. 删除你的 Fork 仓库（日志销毁，密钥不泄露）
 
-> ⚠️ **注意：**
-> - `auth_manager.js` **必须**放在 `js/plugins/` 下，不能放在 `js/` 根目录或其他子文件夹中。
-> - 如果 `js/plugins/` 文件夹不存在，请手动创建。
+### 第五步：部署加密文件到发行包
 
-#### 1.4 在插件管理器中启用
+1. 将 decryptor.node 放入游戏发行包根目录
+2. 将 system.json.enc 放入发行包 data/ 目录，替换原有的 system.json
+3. 将 Chronos Seal 提供的 index.html 替换发行包 www/ 目录中的同名文件
+4. 打包发布
 
-1. 打开 RPG Maker 编辑器
-2. 点击菜单栏的 **工具 → 插件管理**
-3. 在插件列表中找到 `auth_manager.js`
-4. **双击**它，或者勾选左侧的复选框，启用该插件
-5. 点击 **确定** 保存
+> ⚠️ 替换前确认你已经备份了原始文件（在 `_chronos_backup/` 中）。如果还没有备份，请先回到第三步完成备份。
 
-> ⚠️ **如果不启用插件，游戏运行时 `AuthManager` 会报“未定义”错误。**
+---
 
-#### 1.5 放置构建脚本
+## ⚠️ author_secret.txt 的重要性
 
-把以下文件放在游戏工程根目录：
-- `build.bat`
-- `encrypt.bat`
+author_secret.txt 包含：
+- 游戏名称和版本号
+- 衍生种子（Salt）
+- HMAC 盐值
+- IV（初始化向量）
+- 检查点白名单
 
+这份文件是游戏加密的唯一凭证。
 
-### 第二步：修改编译配置（必须）
+- 丢失后无法恢复，加密将永久失效
+- 泄露后加密将完全失效
+- 建议保存到至少两个不同的物理设备
+- 绝对禁止随游戏发行包一起发布
+- 绝对禁止上传到任何云端存储（除非加密后）
 
-打开 `native/binding.gyp`，找到这一行：
+---
 
-```json
-"C:/path/to/steamworks/sdk/public"
-```
+## 参数说明
 
-把它改成你电脑上 Steamworks SDK 的实际路径：
+游戏名称：你的游戏名称。示例：MyGame
+游戏版本号：当前版本号。示例：1.0.0
+截止日期：时间炸弹截止日期，留空则永不过期。示例：2027-01-01
 
-```json
-"D:/dev/steamworks_sdk/public"
-```
+---
 
-⚠️ 如果路径不对，编译时会报错：fatal error: steam/steam_api.h: No such file or directory
+## 错误码速查
 
-如果编译时提示找不到 steam_api 库，取消 libraries 中对应行的注释，并改为你的实际路径：
+错误码 10 — ERR_EXPIRED：游戏版本已过期，请联系开发者更新。
+错误码 30 — ERR_SIGNATURE：授权文件损坏，请重新安装游戏。
+错误码 40 — ERR_NO_RES：游戏文件缺失，请验证游戏完整性或重装。
+错误码 -1 — ERR_UNKNOWN：授权失败，请联系开发者。
 
-· 64 位系统 → 用 win64 + -lsteam_api64
-· 32 位系统 → 用 win32 + -lsteam_api
+---
 
-第三步：运行 build.bat（打包前）
+## 如何升级到新版本
 
-3.1 双击 build.bat
+当你需要发布游戏更新时，按以下步骤操作：
 
-在弹出的命令行窗口中，依次输入：
+1. 在 RPG Maker 中修改游戏内容（地图、事件、数据等）
+2. 如果地图文件有变化，重新运行 ChronosScan.bat，生成新的 config.h 和 checkpoints_guide.txt
+3. 如果需要新增或调整检查点，按 checkpoints_guide.txt 的说明在事件中修改
+4. 将新的 config.h 和新的 system.json（明文）上传到你的 Fork 仓库
+5. 在 GitHub Actions 中重新运行 Build Chronos Seal，输入新的版本号
+6. 下载新的 chronos-seal-output.zip，解压得到新的 decryptor.node 和 system.json.enc
+7. 将新的 decryptor.node 和 system.json.enc 替换游戏发行包中的旧文件
+8. 重新打包发布
 
-```
-请输入游戏版本号（如 1.0.0）: 1.0.0
-请输入发行日期（YYYY-MM-DD）: 2026-08-30
-请输入时间炸弹截止日期（YYYY-MM-DD，回车默认 2027-01-01）: 2027-01-01
-请输入游戏名称（用于注册表路径，如 MyGame）: MyGame
-```
+重要说明：
+- 每次更新版本号都会生成全新的密钥，旧版本的 decryptor.node 无法解密新版本的 system.json.enc
+- 旧版本游戏仍然可以运行，但不会收到更新内容
+- 建议每次更新时同步更新游戏内的版本号显示，方便玩家识别
 
-3.2 等待自动完成
+---
 
-脚本会自动完成以下工作：
+## 如何卸载 / 脱壳（完全移除 Chronos Seal）
 
-· 扫描 data/ 目录下的所有地图文件
-· 自动生成检查点列表
-· 生成 native/src/config.h
-· 编译 decryptor.node
+Chronos Seal V2.0 的设计原则是完全可逆的，但**剥离加密不能只从发行包下手**——因为检查点已经写死在游戏事件里了。如果你只是删掉发行包里的 `decryptor.node` 和 `system.json.enc`，游戏启动时会因为找不到 `AuthManager` 对象而报错。正确的卸载方式是：**回到工程文件，删掉检查点，然后重新打包一个纯净版发行包**。
 
-3.3 查看 build_info.txt
+**步骤：**
 
-编译完成后，根目录会生成一个 build_info.txt 文件。打开它，你会看到类似这样的内容：
+1. 打开 RPG Maker 编辑器，进入插件管理器
+2. 禁用或删除 `auth_manager.js` 插件
+3. 删除所有事件中插入的 `AuthManager.checkpointVerify()` 调用
+4. 删除工程根目录下的 `ChronosScan.bat`、`config.h`、`checkpoints_guide.txt`（如果有）
+5. 如果有备份文件（`_chronos_backup/` 中的 `system.json` 和 `index.html`），将其覆盖回工程目录的对应位置
+6. 保存工程
+7. **重新打包发行包**：在 RPG Maker 编辑器中重新执行 文件 → 部署，生成一个不含 Chronos Seal 残留的纯净发行包
 
-```
-============================================================
-  Chronos Seal V1.2.1 - 检查点植入指南
-============================================================
+**为什么不建议直接从发行包剥离？**
 
-  [检查点植入位置]
-  请在下述地图的转场事件中插入检查点调用：
+因为检查点代码已经写在了游戏事件中，即使删掉了 `.node` 和 `.enc`，游戏运行到地图转场、Boss 战这些节点时，仍然会尝试调用 `AuthManager.checkpointVerify()`，导致游戏直接报错卡死。
 
-  地图 Map005.json → AuthManager.checkpointVerify('map_transition_005')
-  地图 Map010.json → AuthManager.checkpointVerify('map_transition_010')
-  地图 Map015.json → AuthManager.checkpointVerify('map_transition_015')
-  ...
-```
+所以，如果你想彻底移除保护，唯一正确的方式就是回到工程文件，清理干净后再重新打包。这也是为什么 V2.0 强调“只加密发行包，不修改工程文件”——因为你始终可以回到工程文件，恢复一个干净的版本。
 
-这就是你需要植入检查点的位置清单。
+---
 
-第四步：植入检查点（手动操作）
-
-根据 build_info.txt 的提示，在对应地图的转场事件中插入检查点调用。
-
-4.1 打开 RPG Maker 编辑器
-
-打开你的游戏工程。
-
-4.2 找到对应地图
-
-比如 build_info.txt 提示你需要在地图 Map005.json 中植入检查点。
-
-4.3 在转场事件中插入脚本
-
-在地图切换的事件中，插入一个脚本指令，内容为：
-
-```javascript
-if (!AuthManager.checkpointVerify('map_transition_005')) {
-    // 验证失败 → 优雅降级
-    $gamePlayer.reserveTransfer(999, 0, 0, 0);  // 传送至虚空
-    $gameParty._gold = 0;                       // 清空金钱
-    $gameSwitches.setValue(1, false);           // 破坏关键开关
-}
-```
-
-4.4 重复操作
-
-对 build_info.txt 中列出的每个地图，重复以上操作。
-
-💡 提示： 检查点不需要植入太多，7-12 个就足够。植入太多反而会增加你的工作量。
-
-第五步：在公共事件中配置启动验证
-
-5.1 创建一个公共事件
-
-在 RPG Maker 编辑器中，新建一个公共事件，命名为 Auth_Init。
-
-5.2 插入启动验证脚本
-
-在事件中插入一个脚本指令，内容为：
-
-```javascript
-var result = AuthManager.verifyAndDecrypt();
-
-if (result.success) {
-    // 验证通过，继续游戏
-    $gameSystem._authPassed = true;
-    $gameVariables.setValue(1, result.systemJson);
-} else {
-    var code = result.errorCode;
-    var msg = '';
-    if (code === 10) msg = '游戏版本已过期，请到Steam更新。';
-    else if (code === 20) msg = 'Steam账号不匹配，请使用购买游戏的账号登录。';
-    else if (code === 30) msg = '授权文件损坏，请重新安装游戏。';
-    else if (code === 31) msg = '系统时间异常，请同步时间后重试。';
-    else if (code === 40) msg = '游戏文件缺失，请验证游戏完整性或重装。';
-    else if (code === 50) msg = '请先启动Steam客户端。';
-    else msg = '授权失败，错误码: ' + code;
-
-    alert(msg);
-    SceneManager.exit();
-}
-```
-
-5.3 设置自动执行
-
-将这个公共事件设置为在游戏启动时自动执行（在 RPG Maker 的事件列表中，将其放在标题画面之前）。
-
-5.4 配置定时心跳
-
-在游戏的一个并行处理公共事件中，每隔 3-5 秒调用：
-
-```javascript
-AuthManager.heartbeatReply();
-```
-
-这个心跳用于维持看门狗，防止游戏被调试器挂起分析。
-
-第六步：运行 RPG Maker 编辑器部署
-
-在 RPG Maker 编辑器中，点击 文件 → 部署，选择目标平台（Windows），输入素材加密密钥（随便填，RPG Maker 自己的加密），生成发行版。
-
-部署完成后，你会得到一个包含 www/ 目录的发行包文件夹。
-
-第七步：修改发行包中的 index.html（必须）
-
-⚠️ 重要： index.html 的修改必须在 RPG Maker 编辑器部署完成后，在发行包目录中进行！不要在工程文件里修改！
-
-7.1 找到发行包中的 index.html
-
-在部署生成的发行包目录中（在 www/ 文件夹中），找到 index.html。
-
-⚠️ 不要修改工程根目录的 index.html，那个会在部署时被覆盖。
-
-7.2 删除原有 index.html
-
-删除发行包目录中自带的 index.html 文件。
-
-7.3 使用 Chronos Seal 提供的 index.html 替换
-
-将 Chronos Seal 提供的 index.html 文件复制到发行包目录（与 www/ 同级），覆盖原有的文件。
-
-7.4 用文本编辑器打开
-
-用 Notepad++、VS Code 或任意文本编辑器打开 index.html。
-
-7.5 修改 title 标签
-
-找到这一行：
-
-```html
-<title>改这里！</title>
-```
-
-改成你的游戏名称：
-
-```html
-<title>你的游戏名称</title>
-```
-
-7.6 保存文件
-
-保存后关闭编辑器。
-
-第八步：复制文件到发行包目录
-
-将以下两个文件复制到发行包根目录（与 www/ 同级）：
-
-1. decryptor.node（从 native/build/Release/ 复制）
-2. encrypt_config.json（从工程根目录复制）
-
-第九步：运行 encrypt.bat（部署后）
-
-在发行包目录中，双击 encrypt.bat。
-
-脚本会自动：
-
-1. 读取 encrypt_config.json 中的配置
-2. 加密 www/data/system.json → system.json.enc
-3. 校验加密文件是否成功生成
-4. 自动删除明文 system.json
-5. 自动删除 encrypt_config.json（用完即焚）
-
-⚠️ 重要： 加密完成后，发行包中只有 system.json.enc，没有明文 system.json。
-
-9.1 删除 encrypt.bat
-
-加密完成后，手动删除发行包目录中的 encrypt.bat 文件，该文件仅在加密阶段使用，无需随游戏分发。
-
-第十步：打包 Steam
-
-将整个发行包目录打包，上传到 Steam。
-
-最终发行包内容：
-
-```
-发行包目录/
-├── www/
-│   ├── data/
-│   │   ├── system.json.enc      ← 加密文件（Chronos Seal 保护）
-│   │   └── Map*.json            ← 地图文件（明文，不影响）
-│   ├── js/
-│   │   ├── plugins/
-│   │   │   └── auth_manager.js  ← Chronos Seal 插件（已启用）
-│   │   └── plugins.js           ← 插件列表（已包含 auth_manager）
-│   └── index.html               ← 已修改标题
-├── decryptor.node               ← Chronos Seal C++ 核心
-└── Game.exe
-```
-
-🔧 参数说明
-
-build.bat 输入参数
-
-· 游戏版本号：游戏当前版本，用于派生发行密钥。示例：1.0.0
-· 发行日期：游戏发行日期，用于派生发行密钥。示例：2026-08-30
-· 时间炸弹截止日期：游戏停止运行的时间点，默认 2027-01-01
-· 游戏名称：用于生成注册表路径。示例：MyGame
-
-注册表路径规则：SOFTWARE\游戏名称\ChronosSeal
-
-binding.gyp 修改项
-
-· Steamworks SDK 路径：你电脑上 Steamworks SDK 的 public 目录路径。示例：D:/dev/steamworks_sdk/public
-· 库路径（可选）：Steam API 库文件路径，编译报错时再改。示例：-L D:/dev/steamworks_sdk/redistributable_bin/win64
-
-index.html 修改项（部署后修改）
-
-· <title> 标签：改为你的游戏名称。修改时机：部署完成后，在发行包目录中修改。
-
-config.h 参数（由 build.bat 自动生成，一般不需要手动修改）
-
-· HARD_EXPIRE：时间炸弹截止时间戳，默认值 1767225600（2027-01-01）
-
-如需修改截止日期，在 native/src/config.h 中修改 HARD_EXPIRE 的值。
-
-⚠️ 注意： build.bat 每次运行都会重新生成 config.h，如果你手动修改了 HARD_EXPIRE，下次运行 build.bat 会被覆盖。如需永久修改，请在运行 build.bat 后手动改回，或修改 build.bat 中的默认值。
-
-📊 错误码速查
-
-· 错误码 10 — ERR_EXPIRED：游戏版本已过期，请到 Steam 更新。
-· 错误码 20 — ERR_ID_MISMATCH：Steam 账号不匹配，请使用购买游戏的账号登录。
-· 错误码 30 — ERR_SIGNATURE：授权文件损坏，请重新安装游戏。
-· 错误码 31 — ERR_TIME_TAMPER：系统时间异常，请同步时间后重试。
-· 错误码 40 — ERR_NO_RES：游戏文件缺失，请验证游戏完整性或重装。
-· 错误码 50 — ERR_NO_STEAM：请先启动 Steam 客户端。
-· 错误码 -1 — ERR_UNKNOWN：授权失败，请联系开发者。
-
-📋 开发者部署检查清单
-
-阶段一：环境配置
-
-· 已安装 Node.js
-· 已安装 OpenSSL 开发库
-· 已下载 Steamworks SDK
-· binding.gyp 中的 Steamworks SDK 路径已修改
-
-阶段二：文件放置
-
-· auth_manager.js 已放入 js/plugins/ 目录
-· 已在 RPG Maker 插件管理器中启用 auth_manager.js
-· decryptor.cc 已放入 native/src/
-· binding.gyp 已放入 native/
-· build.bat 已放入工程根目录
-· encrypt.bat 已放入工程根目录
-
-阶段三：配置与编译
-
-· 运行 build.bat 输入了正确的版本号、日期、游戏名
-· decryptor.node 编译成功
-· build_info.txt 已生成
-
-阶段四：代码植入
-
-· 已根据 build_info.txt 在对应地图的转场事件中植入检查点
-· 已在公共事件中配置启动验证
-· 已配置定时心跳（每 3-5 秒）
-
-阶段五：部署与加密
-
-· 已运行 RPG Maker 编辑器部署
-· 已在发行包目录中修改 index.html 的 title 标签
-· decryptor.node 已复制到发行包目录
-· encrypt_config.json 已复制到发行包目录
-· 已运行 encrypt.bat
-· system.json.enc 已成功生成
-· 明文 system.json 已自动删除
-· encrypt_config.json 已自动删除
-· encrypt.bat 已从发行包目录删除
-
-阶段六：打包
-
-· 发行包中只有 system.json.enc，没有明文 system.json
-· 已准备好打包 Steam 版本
-
-📋 更新日志
-
-V1.2.1（2026-08-30）—— 补丁发布
-
-· 修复 encrypt.bat 脚本目录不存在时执行失败的问题
-· 首次激活增加原子性保护：先备份原文件 → 写入 auth.key → 确认成功后再覆写 system.json.enc → 失败时自动回滚
-· build.bat 增加 HARD_EXPIRE 日期输入，用户可自定义时间炸弹截止日期
-
-V1.2（2026-08-30）—— 预加密 + 一机一密 + 自动化构建
-
-· 新增 build.bat 打包前自动化构建工具
-· 新增 encrypt.bat 部署后 system.json 加密工具
-· 新增 index.html 启动劫持，引擎读取文件前完成解密
-· 新增预加密机制，发行包内无明文 system.json
-· 新增派生密钥机制，每位玩家专属密钥
-· 新增首次激活流程，发行密钥解密 → 用户密钥重加密
-· 新增 encrypt_config.json 配置传递
-· 优化明文 system.json 用完即焚（内存中瞬态存在）
-· 优化 StorageManager.loadFromFile 劫持，用完即焚
-· 安全加密完成后 encrypt_config.json 自动删除
-
-V1.1（2026-08-29）—— ADS 双存储防篡改增强
-
-· 新增 NTFS 备用数据流（ADS）作为第三隐性存储
-· 增强 verify_time 升级为注册表 + ADS 双源交叉校验
-· 修复 GenerateFirstTimeAuth 执行顺序
-· 优化 save_current_time_to_registry 内部同时处理注册表与 ADS 写入
-· 安全时间存储从“单点可删”升级为“双存储自修复”
-
-V1.0（2026-08-28）—— 初始稳定版
-
-· 新增三层防御体系（L1 C++ 信任根 + L2 JS 胶水层 + L3 行为验证层）
-· 新增 Steam 身份锚定，HMAC-SHA256 签名绑定 UID，多采样抗 Hook
-· 新增时间自毁机制，硬编码截止时间戳 + 注册表防回拨
-· 新增资源加密锁，AES-256-CBC 加密 system.json，C++ 内存解密
-· 新增行为检查点矩阵，单向 HMAC 哈希链
-· 新增看门狗守护线程，独立系统级线程
-· 新增安全落盘机制，覆写原文件为全 0 并校验
-· 安全新增 .overwrite_failed 覆写失败持久化标记
-· 安全新增看门狗日志编译宏 WATCHDOG_LOGGING
-
-⚠️ 常见问题
-
-Q: 运行 build.bat 时提示“未找到 Node.js”？
-
-A: 请先安装 Node.js（从 nodejs.org 下载），安装时勾选“添加到 PATH”。
-
-Q: 编译 decryptor.node 时提示“fatal error: steam/steam_api.h: No such file or directory”？
-
-A: binding.gyp 中的 Steamworks SDK 路径不正确，请修改为实际路径。
-
-Q: 编译时提示“cannot find -lsteam_api”？
-
-A: 需要在 binding.gyp 的 libraries 中添加库路径，取消对应注释并修改为实际路径。
-
-Q: 运行游戏时提示“AuthManager 未定义”？
-
-A: 可能的原因：
-
-· auth_manager.js 没有放在 js/plugins/ 目录下
-· 没有在 RPG Maker 插件管理器中启用 auth_manager.js
-· decryptor.node 没有被正确加载（检查是否在发行包目录中）
-
-Q: 运行游戏时提示“授权失败，错误码: 50”？
-
-A: Steam 客户端未运行。请先启动 Steam 并登录购买游戏的账号。
-
-Q: 运行游戏时提示“游戏文件缺失，请验证游戏完整性或重装”（错误码 40）？
-
-A: www/data/system.json.enc 不存在。请确保已运行 encrypt.bat。
-
-Q: 修改游戏后需要重新加密吗？
-
-A: 需要。每次修改游戏后，重新运行 RPG Maker 编辑器部署，然后在发行包目录重新运行 encrypt.bat。
-
-Q: encrypt.bat 加密后，明文 system.json 去哪了？
-
-A: 已自动删除。发行包中只保留 system.json.enc。
-
-Q: 如果加密失败，明文 system.json 会不会被删？
-
-A: 不会。encrypt.bat 会先校验 system.json.enc 是否成功生成且大小合理，确认无误后才删除明文。
-
-Q: 检查点需要植入多少个？
-
-A: 建议 7-12 个。build.bat 会根据地图数量自动计算推荐值。
-
-Q: 植入检查点后，测试时自己触发检查点失败了怎么办？
-
-A: 开发测试阶段可以临时注释掉检查点代码，或直接在 build.bat 中减少检查点数量。正式发行前再恢复。
-
-Q: 我修改了工程里的 index.html，但部署后标题又变回“改这里！”了？
-
-A: 因为工程里的 index.html 会在部署时被覆盖。请在部署完成后，修改发行包目录中的 index.html，而不是工程里的。
-
-📄 许可证
+## 许可证
 
 本项目采用 MIT 许可证，详见 LICENSE 文件。
 
-注意：本方案仅提供技术框架，使用者需自行确保遵循 Steam 平台及各国法律合规要求。
+---
 
-🙏 致谢
+## 致谢
 
-· node-addon-api
-· OpenSSL
-· Steamworks SDK
+- node-addon-api
+- OpenSSL
+- @JiuGeGe520 —— 帮忙发现初期漏洞，推动 V1.1 的 ADS 双存储方案落地
+- Project 1 的 fux2 —— 指出 V1.x 版本的核心误区，促使 V2.0 彻底重构
 
-📬 联系方式
+---
 
-· 作者：CLARE-XHL
-· 项目地址：https://github.com/CLARE-XHL/Chronos-Seal
+## 联系方式
+
+作者：CLARE-XHL
+项目地址：https://github.com/CLARE-XHL/Chronos-Seal
+
 
 ⭐ 如果这个项目对你有帮助，请给一个 Star，让更多独立开发者看到！
