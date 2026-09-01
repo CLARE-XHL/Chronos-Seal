@@ -8,7 +8,6 @@ export default {
   ],
   themeConfig: {
     siteTitle: 'Chronos Seal',
-    logo: '/logo.png',
     nav: [
       { text: '指南', link: '/guide/getting-started' },
       { text: '模板仓库', link: 'https://github.com/CLARE-XHL/Chronos-Builder-Template' },
