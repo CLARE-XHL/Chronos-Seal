@@ -9,23 +9,26 @@ export default {
   themeConfig: {
     siteTitle: 'Chronos Seal',
     nav: [
-      { text: '指南', link: '/guide/getting-started' },
-      { text: '模板仓库', link: 'https://github.com/CLARE-XHL/Chronos-Builder-Template' },
-      { text: 'GitHub', link: 'https://github.com/CLARE-XHL/Chronos-Seal' }
+      { text: '指南', link: '/guide/introduction' },
+      { text: '主仓库', link: 'https://github.com/CLARE-XHL/Chronos-Seal' },
+      { text: 'Action模板仓库', link: 'https://github.com/CLARE-XHL/Chronos-Builder-Template' }
     ],
     sidebar: {
       '/guide/': [
+        { text: '前言', link: '/guide/introduction' },
         { text: '快速开始', link: '/guide/getting-started' },
-        { text: '检查点植入', link: '/guide/scan-and-insert' },
-        { text: '云端编译', link: '/guide/cloud-build' },
-        { text: '部署到游戏', link: '/guide/deploy' }
-      ],
-      '/reference/': [
+        { text: '使用 JS 插件与布入事件', link: '/guide/using-plugin' },
+        { text: 'Fork 仓库与 Action 工作流', link: '/guide/fork-and-action' },
+        { text: '使用BAT加密资源', link: '/guide/encrypt-assets' },
+        { text: '构建工作', link: '/guide/build-work' },
+        { text: '网络环境', link: '/guide/network' },
         { text: '错误码', link: '/reference/error-codes' },
-        { text: '更新日志', link: '/reference/changelog' }
-      ],
-      '/builder/': [
-        { text: '模板仓库使用说明', link: '/builder/template-usage' }
+        { text: '常见问题', link: '/guide/faq' },
+        { text: '关于 Chronos Seal', link: '/guide/about' },
+        { text: '如何反馈', link: '/guide/feedback' },
+        { text: '更新日志', link: '/reference/changelog' },
+        { text: '贡献者名单', link: '/guide/contributors' },
+        { text: '赞助者名单', link: '/guide/sponsors' }
       ]
     },
     socialLinks: [
