@@ -32,7 +32,7 @@ Chronos Seal 可以挡住大部分小白，但**挡不住会 IDA 与二进制反
 
 - 需要**注册 GitHub 账号**（用于 Actions 云端编译）
 - 需要**安装 Node.js**（仅用于本地加密素材，玩家不需要）
-- 目前**仅支持 Windows 平台**（Linux 没测过，但谁会拿 Linux 玩 RPG 呢？）
+- 目前**仅支持 Windows 平台**（Linux 没测过，但谁会拿 Linux 玩 RPG 呢？ Bush ～）
 - 修改 `.node` 文件后，无法通过增量更新进行更新（需要把整个 `audio/` 和 `img/` 文件夹做成补丁再发布，更新包较大）
 - 虽然使用 GitHub Actions 自动编译和 Windows 批处理自动加密，但整体流程仍然需要跟着文档走
 
