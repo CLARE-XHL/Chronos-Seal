@@ -1,61 +1,44 @@
 # 快速开始
 
-V2.0 的使用流程非常简单，全程不需要安装任何编译工具。
+> 📖 **在开始之前，建议你先读完「前言」部分，了解 Chronos Seal 的定位、缺陷与门槛，再决定它是否适合你的项目。**
 
-## 你需要准备
 
-- 一个 GitHub 账号
-- 你的 RPG Maker 游戏工程
+## 准备工作
 
-## 第一步：下载 Chronos Seal V2.0 发行包
+在开始部署 Chronos Seal 之前，你需要做好以下准备工作：
 
-从 [Releases](https://github.com/CLARE-XHL/Chronos-Seal/releases) 页面下载最新版，解压后得到：
+- **GitHub 账号**：前往 [github.com](https://github.com) 注册（如果无法访问或访问过慢，请查看 [网络环境](#网络环境)）
+- **Node.js**：前往 [nodejs.org](https://nodejs.org) 下载 exe 文件并安装
+- **完整已完成开发的 RPG Maker 工程文件**：这我帮不了你……
 
-- `ChronosScan.bat`（本地扫描器）
-- `auth_manager.js`（JS 插件）
-- `index.html`（启动劫持模板）
 
-## 第二步：运行扫描器，植入检查点，启用插件
+## 为什么要注册 GitHub 和安装 Node.js？
 
-1. 将 `ChronosScan.bat` 放入你的游戏工程根目录
-2. 双击运行，脚本会自动扫描所有地图，生成：
-   - `checkpoints_guide.txt` —— 检查点植入说明书（给人看）
-   - `config.h` —— 检查点白名单（给机器编译用）
-3. 打开 `checkpoints_guide.txt`，在对应地图的转场事件中插入检查点代码
-4. 将 `auth_manager.js` 放入 `js/plugins/` 目录
-5. 在 RPG Maker 插件管理器中启用 `auth_manager.js`
+**GitHub**：你在使用 Actions 时，为了安全，需要将模板仓库 Fork 到自己的账户下并设为私有仓库，防止你的盐值与 IV 被他人盗取。而且 GitHub 上也有很多优秀开源项目，账号注册十分容易，不亏。
 
-## 第三步：打包游戏，生成发行包，备份原文件
+**Node.js**：Windows 批处理需要调用 Node.js 的 API 来执行加密操作，而且 RPG Maker 本身由 JS 驱动，后期调用插件也可能用上。
 
-1. 在 RPG Maker 编辑器中点击 文件 → 部署
-2. 选择目标平台（Windows），生成发行包
-3. 打包完成后，你会得到一个包含 `www/` 目录的发行包文件夹
+> 总比装一堆 Python、gyp、MSVC、OpenSSL、Notepad++ 方便多了吧！
 
-> ⚠️ 在继续下一步之前，先备份发行包中的两个原始文件：
-> - `www/index.html`（原始入口文件）
-> - `data/system.json`（明文配置文件）
-> 
-> 在工程根目录下新建 `_chronos_backup/` 文件夹，将这两个文件复制进去。这样调试或回退时可以直接恢复。
+准备完成后，你就可以前往 [Chronos Seal 的仓库](https://github.com/CLARE-XHL/Chronos-Seal) 下载发行包了。
 
-## 第四步：云端编译
 
-1. Fork [Chronos-Builder-Template](https://github.com/CLARE-XHL/Chronos-Builder-Template) 到你的 GitHub 账户（必须设为私有）
-2. 将 `config.h` 和游戏工程中的 `data/system.json`（明文）上传到仓库根目录
-3. 在仓库页面点击 Actions → Build Chronos Seal → Run workflow
-4. 填写参数：
-   - 游戏名称（如 `MyGame`）
-   - 游戏版本号（如 `1.0.0`）
-   - 截止日期（留空则永不过期）
-5. 等待 2-3 分钟，下载 `chronos-seal-output.zip`
-6. 解压得到：`decryptor.node`、`system.json.enc`、`author_secret.txt`
-7. 将 `author_secret.txt` 离线保存，绝对不要放进游戏包！
-8. 删除你的 Fork 仓库（日志销毁，密钥不泄露）
+## ⚠️ 重要提醒
 
-## 第五步：部署加密文件到发行包
+虽然 Chronos Seal 以 MIT 许可证开源，允许所有 RM 作者在自己的 RM 游戏中集成 Chronos Seal 并进行商用，但**严禁直接售卖 Chronos Seal 本体**！
 
-1. 将 `decryptor.node` 放入游戏发行包根目录
-2. 将 `system.json.enc` 放入发行包 `data/` 目录，替换原有的 `system.json`
-3. 将 Chronos Seal 提供的 `index.html` 替换发行包 `www/` 目录中的同名文件
-4. 打包发布
+简单来说：**你卖用了 Chronos Seal 的游戏可以，但直接卖 Chronos Seal 绝对不行。**
 
-> ⚠️ 替换前确认你已经备份了原始文件（在 `_chronos_backup/` 中）。如果还没有备份，请先回到第三步完成备份。
+各位 RM 游戏作者可以放心，这针对的不是你们，而是那些倒卖工具的。Chronos Seal 将会维护各位贡献者和 RM 游戏作者的权益。
+
+
+## 解压后的文件
+
+下载解压后，你会得到以下四个文件：
+
+- `encrypt_assets.bat` —— 素材加密脚本（双击运行）
+- `index.html` —— 启动入口文件（替换发行包中的同名文件）
+- `auth_manager.js` —— JS 胶水层插件（放入 `js/plugins/` 目录）
+- `encrypt_assets.js` —— 加密脚本（被 bat 调用）
+
+接下来请前往 [使用 JS 插件与布入事件](#使用js插件与布入事件)。
