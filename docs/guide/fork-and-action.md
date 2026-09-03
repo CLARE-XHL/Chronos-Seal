@@ -5,7 +5,7 @@
 
 Chronos Seal 的 C++ 核心代码需要通过 GitHub Actions 在云端编译，生成专属的 `decryptor.node` 文件。这一步不需要你在本地安装任何编译工具（不需要 Node.js、Python、MSVC、OpenSSL），所有编译工作由 GitHub 云端完成。
 
-为了安全，你需要 **Fork 模板仓库到自己的 GitHub 账户** 并 **设为私有仓库**，防止你的盐值和 IV 被他人盗取。
+为了安全，你需要 **Fork 模板仓库到自己的 GitHub 账户** 并 **设为私有仓库**，防止你的密钥派生种子等敏感参数被他人盗取。
 
 
 ## 第一步：Fork 模板仓库
