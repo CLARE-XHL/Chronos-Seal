@@ -6,7 +6,7 @@ hero:
   text: "时序为封印 · 行为作密钥 · 岁月守护原创"
   tagline: 为 RPG Maker MV/MZ 设计的无服务器运行时完整性保护方案
   image:
-    src: /logo.svg
+    src: /logo.png
     alt: Chronos Seal
   actions:
     - theme: brand
