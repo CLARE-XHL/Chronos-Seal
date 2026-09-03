@@ -7,7 +7,7 @@
 
 在开始部署 Chronos Seal 之前，你需要做好以下准备工作：
 
-- **GitHub 账号**：前往 [github.com](https://github.com) 注册（如果无法访问或访问过慢，请查看 [网络环境](#网络环境)）
+- **GitHub 账号**：前往 [github.com](https://github.com) 注册（如果无法访问或访问过慢，请查看 [网络环境](/guide/network）
 - **Node.js**：前往 [nodejs.org](https://nodejs.org) 下载 exe 文件并安装
 - **完整已完成开发的 RPG Maker 工程文件**：这我帮不了你……
 
@@ -41,4 +41,4 @@
 - `auth_manager.js` —— JS 胶水层插件（放入 `js/plugins/` 目录）
 - `encrypt_assets.js` —— 加密脚本（被 bat 调用）
 
-接下来请前往 [使用 JS 插件与布入事件](#使用js插件与布入事件)。
+接下来请前往 [使用 JS 插件与布入事件](/guide/using-plugin)。
