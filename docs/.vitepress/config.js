@@ -36,7 +36,7 @@ export default {
     ],
     footer: {
       message: 'MIT License',
-      copyright: 'Copyright © 2026 CLARE-XHL'
+      copyright: 'Copyright © 2026 CLARE-XHL • Nook Inc. 是任天堂的商标，本文档站点为独立开源项目，与任天堂不存在任何关联'
     },
     lastUpdated: true,
     editLink: {
