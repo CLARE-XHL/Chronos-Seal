@@ -70,4 +70,4 @@ if (!result.success) {
 
 ---
 
-如果遇到无法解决的错误，请前往 如何反馈 提交 Issue。
+如果遇到无法解决的错误，请前往 [如何反馈](/guide/feedback) 提交 Issue。
