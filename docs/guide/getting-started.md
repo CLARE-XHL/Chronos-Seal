@@ -42,23 +42,3 @@
 - `encrypt_assets.js` —— 加密脚本（被 bat 调用）
 
 接下来请前往 [使用 JS 插件与布入事件](/guide/using-plugin)。
-
-## ⚠️ 重要提醒
-
-虽然 Chronos Seal 以 MIT 许可证开源，允许所有 RM 作者在自己的 RM 游戏中集成 Chronos Seal 并进行商用，但**严禁直接售卖 Chronos Seal 本体**！
-
-简单来说：**你卖用了 Chronos Seal 的游戏可以，但直接卖 Chronos Seal 绝对不行。**
-
-各位 RM 游戏作者可以放心，这条针对的不是你们，而是那些倒卖工具的。Chronos Seal 将会维护各位贡献者和 RM 游戏作者的权益。
-
-
-## 解压后的文件
-
-下载解压后，你会得到以下四个文件：
-
-- `encrypt_assets.bat` —— 素材加密脚本（双击运行）
-- `index.html` —— 启动入口文件（替换发行包中的同名文件）
-- `auth_manager.js` —— JS 胶水层插件（放入 `js/plugins/` 目录）
-- `encrypt_assets.js` —— 加密脚本（被 bat 调用）
-
-接下来请前往 [使用 JS 插件与布入事件](/guide/using-plugin)。
