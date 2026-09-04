@@ -62,7 +62,7 @@ Chronos Seal 不追求绝对不可破解——那在客户端环境中不存在�
 
 | 链接 | 说明 |
 |:---|:---|
-| [📖 完整文档](https://docs.nookinc.org) | VitePress 文档站（推荐先看） |
+| [📖 完整文档](https://docs.crclare.top) | VitePress 文档站（推荐先看） |
 | [📦 主仓库](https://github.com/CLARE-XHL/Chronos-Seal) | 源码 & Releases |
 | [☁️ 模板仓库](https://github.com/CLARE-XHL/Chronos-Builder-Template) | 云端编译入口 |
 | [📋 Releases](https://github.com/CLARE-XHL/Chronos-Seal/releases) | 下载最新发行包 |
@@ -86,7 +86,7 @@ Chronos Seal 不追求绝对不可破解——那在客户端环境中不存在�
 
 - 作者：CLARE-XHL
 - 项目地址：[https://github.com/CLARE-XHL/Chronos-Seal](https://github.com/CLARE-XHL/Chronos-Seal)
-- 文档站：[https://docs.nookinc.org](https://docs.nookinc.org)
+- 文档站：[https://docs.crclare.top](https://docs.crclare.top)
 
 
 ⭐ 如果这个项目对你有帮助，请给主仓库一个 Star！
