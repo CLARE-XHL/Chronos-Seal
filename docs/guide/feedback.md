@@ -30,9 +30,9 @@ GitHub Issues 是跟踪问题和讨论最直接的渠道，建议优先使用。
 
 如果不方便使用 GitHub，也可以通过邮箱联系。
 
-**邮箱地址**：[contact@nookinc.org](mailto:contact@nookinc.org)
+**邮箱地址**：[contact@crclare.top](mailto:contact@crclare.top)
 
-> 邮件会通过 Cloudflare 转发，回复时实际显示的可能是转发邮箱地址，但我会正常收到并回复。
+> 邮件会通过 Cloudflare 转发，所以回复时实际显示的可能是我的个人邮箱地址，但我会正常收到并回复。
 
 
 ## Project 1 论坛
