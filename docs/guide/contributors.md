@@ -28,7 +28,7 @@
 
 你的名字可以在这里。
 
-如果你提交过 Issue、PR，或者在论坛提供了有价值的反馈，欢迎通过 [GitHub Issues](https://github.com/CLARE-XHL/Chronos-Seal/issues) 或邮箱 [contact@nookinc.org](mailto:contact@nookinc.org) 告知，我会将你加入此名单（除非你希望匿名）。
+如果你提交过 Issue、PR，或者在论坛提供了有价值的反馈，欢迎通过 [GitHub Issues](https://github.com/CLARE-XHL/Chronos-Seal/issues) 或邮箱 [contact@crclare.top](mailto:contact@crclare.top) 告知，我会将你加入此名单（除非你希望匿名）。
 
 
 ## 如何加入贡献者名单？
