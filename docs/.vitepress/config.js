@@ -34,7 +34,15 @@ export default {
     ],
     footer: {
       message: 'MIT License',
-      copyright: 'Copyright © 2026 CLARE-XHL · Nook Inc. 是任天堂的商标，本文档站点为独立开源项目，与任天堂不存在任何关联。'
+      copyright: `Copyright © ${new Date().getFullYear()} CLARE-XHL · Nook Inc. 是任天堂株式会社的商标，本文档站点为独立开源项目，与任天堂株式会社不存在任何关联。`
+    },
+    lastUpdated: true,
+    editLink: {
+      pattern: 'https://github.com/CLARE-XHL/Chronos-Seal/edit/main/docs/:path',
+      text: '在 GitHub 上编辑此页'
+    }
+  }
+}      copyright: 'Copyright © 2026 CLARE-XHL · CrCLARE 工作室'
     },
     lastUpdated: true,
     editLink: {
