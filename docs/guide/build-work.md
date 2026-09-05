@@ -33,7 +33,7 @@
 
 ## 第二步：替换 `index.html`
 
-将 Chronos Seal 发行包中的 `index.html` 替换 `www/` 目录中的同名文件。
+将 Chronos Seal 发行包中的 `index.html` 替换 `www/` 目录中的同名文件，并修改其中的“你的游戏名称”为你的真实游戏名称。
 
 > ⚠️ `index.html` 包含了素材加载劫持逻辑，**必须替换**，否则加密素材无法被正确解密。
 
