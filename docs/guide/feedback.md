@@ -25,12 +25,22 @@ GitHub Issues 是跟踪问题和讨论最直接的渠道，建议优先使用。
 
 > ⚠️ 请不要在 Issue 中透露你的 `author_secret.txt` 内容或任何密钥信息。
 
+>  如果你是报告安全问题，请参考主仓库中的Security，不要把漏洞公开发在 Issue。
+
 
 ## 邮箱
 
 如果不方便使用 GitHub，也可以通过邮箱联系。
 
 **邮箱地址**：[contact@crclare.top](mailto:contact@crclare.top)
+
+- **GPG 公钥指纹**：`7360A9A8B36BCA6D73B26D38DC22E64108B24CD3`
+- **公钥获取方式**：
+  - 从公钥服务器导入：`gpg --keyserver keys.openpgp.org --recv-keys 7360A9A8B36BCA6D73B26D38DC22E64108B24CD3`
+  - 或访问 [keys.openpgp.org](https://keys.openpgp.org) 搜索 `contact@crclare.top`
+
+如果你是报告安全问题，建议使用 GPG 加密敏感内容后发送，以确保通信安全。
+
 
 > 邮件会通过 Cloudflare 转发，所以回复时实际显示的可能是我的个人邮箱地址，但我会正常收到并回复。
 
