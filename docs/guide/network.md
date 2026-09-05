@@ -18,7 +18,7 @@
 
 **下载地址**：[Watt Toolkit 官网](https://steampp.net/)
 
-> 目前Watt Toolkit的最新版已不支持Winows 7，请寻找低版本安装。
+> 目前Watt Toolkit的最新版已不支持Windows 7，请寻找低版本安装。
 
 **开源可信**：Watt Toolkit 是开源项目，源码托管在 [GitHub](https://github.com/BeyondDimension/SteamTools)，采用 GPL-3.0 许可证。如果你对发布的二进制文件不放心，可以自行下载源码编译运行。
 
