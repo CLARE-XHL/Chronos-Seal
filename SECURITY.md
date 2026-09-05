@@ -11,14 +11,19 @@ Chronos Seal 重视每一个安全漏洞的发现和修复。如果你发现了�
 1. 访问 [https://github.com/CLARE-XHL/Chronos-Seal/security/advisories/new](https://github.com/CLARE-XHL/Chronos-Seal/security/advisories/new)
 2. 点击“Report a vulnerability”
 3. 填写漏洞描述、影响版本、复现步骤等信息
-4. 提交后，我会在 72 小时内响应并处理
+4. 提交后，我会在看到后的 72 小时内响应并处理
 
 **备选渠道：邮箱**
 
-如果无法使用 GitHub Security Advisories，也可以通过邮箱联系：
+如果无法使用 GitHub Security Advisories，也可以通过邮箱联系。
 
 - **邮箱**：[contact@crclare.top](mailto:contact@crclare.top)
-- **加密方式**：如果需要加密通信，请在邮件中说明，我会提供 PGP 公钥
+- **GPG 公钥指纹**：`7360A9A8B36BCA6D73B26D38DC22E64108B24CD3`
+- **公钥获取方式**：
+  - 从公钥服务器导入：`gpg --keyserver keys.openpgp.org --recv-keys 7360A9A8B36BCA6D73B26D38DC22E64108B24CD3`
+  - 或访问 [keys.openpgp.org](https://keys.openpgp.org) 搜索 `contact@crclare.top`
+
+建议使用 GPG 加密敏感内容后发送，以确保通信安全。
 
 ### 报告时应提供的信息
 
