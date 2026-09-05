@@ -51,12 +51,12 @@ GitHub Issues 是跟踪问题和讨论最直接的渠道，建议优先使用。
   ```bash
   gpg --keyserver keys.openpgp.org --recv-keys 7360A9A8B36BCA6D73B26D38DC22E64108B24CD3
 
-- 在线查看：访问 keys.openpgp.org 搜索 contact@crclare.top
+- 在线查看：访问 [keys.openpgp.org](keys.openpgp.org) 搜索 contact@crclare.top
 
 我发出的安全相关邮件都会使用该 GPG 私钥签名，你可以通过验证签名确认邮件来源的真实性，防止邮件被伪造或篡改。
 
 
-> 邮件会通过 Cloudflare 转发，所以回复时实际显示的可能是我的个人邮箱地址，但我会正常收到并回复。
+> 邮件会通过 Cloudflare 转发，所以回复时实际显示的可能是我的个人邮箱地址，但我会正常收到并回复，你可以通过验证签名来确认的确是由我本人发出。
 
 
 ## Project 1 论坛
