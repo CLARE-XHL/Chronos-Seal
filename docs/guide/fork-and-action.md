@@ -16,16 +16,7 @@ Chronos Seal 的 C++ 核心代码需要通过 GitHub Actions 在云端编译，�
 4. 等待 Fork 完成，你会进入你自己账户下的模板仓库
 
 
-## 第二步：上传 `system.json`
-
-1. 在你的 Fork 仓库中，点击 **Add file** → **Upload files**
-2. 将你的游戏工程中的 `data/system.json`（明文）文件拖入上传区域
-3. 点击 **Commit changes** 提交
-
-> ⚠️ Chronos Seal V2.1 只需要上传 `system.json`，不再需要 `config.h`。
-
-
-## 第三步：触发 GitHub Actions
+## 第二步：触发 GitHub Actions
 
 1. 在你的 Fork 仓库中，点击上方的 **Actions** 标签
 2. 在左侧列表中找到 **Build Chronos Seal**
@@ -38,10 +29,10 @@ Chronos Seal 的 C++ 核心代码需要通过 GitHub Actions 在云端编译，�
 | 游戏版本号 | 当前版本号（用于派生密钥） | `1.0.0` |
 | 截止日期 | 时间炸弹截止日期（留空则永不过期） | `2027-01-01` |
 
-5. 点击 **Run workflow**，等待编译完成（约 2-3 分钟）
+5. 点击 **Run workflow**，等待编译完成（约 2-3 分钟或 8-10 分钟，主要看OpenSSL要不要被重编译）
 
 
-## 第四步：下载产物
+## 第三步：下载产物
 
 编译完成后，在 Actions 页面底部会生成一个 **Artifacts** 压缩包：
 
@@ -55,7 +46,7 @@ Chronos Seal 的 C++ 核心代码需要通过 GitHub Actions 在云端编译，�
 - `author_secret.txt` —— 作者专属密钥，**离线保存，绝对不要放进游戏包！**
 
 
-## 第五步：删除 Fork 仓库（重要！）
+## 第四步：删除 Fork 仓库（重要！）
 
 下载文件后，**立即删除你的 Fork 仓库**，确保日志和密钥不泄露：
 
