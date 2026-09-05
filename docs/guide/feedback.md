@@ -33,7 +33,7 @@ GitHub Issues 是跟踪问题和讨论最直接的渠道，建议优先使用。
 
 **安全报告专用渠道**：请访问主仓库的 Security 标签页，查看完整的漏洞报告流程与 GPG 公钥信息。
 
-> 安全报告入口：[CLARE-XHL/Chronos-Seal → Security](https://github.com/CLARE-XHL/Chronos-Seal/security)
+> 安全报告入口：[CLARE-XHL/Chronos-Seal → Security](https://github.com/CLARE-XHL/Chronos-Seal?tab=security-ov-file)
 
 
 ## 邮箱
