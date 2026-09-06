@@ -65,8 +65,6 @@ Chronos Seal 可以挡住大部分小白，但**挡不住会 IDA 与二进制反
 
 ### 四、商业加密方案
 
-- **HakuBox VFS（付费版）**：白箱的付费版本，提供更完整的 VFS 封装和增量补丁能力，适合商业化项目。
-
 - **Cooktool Delux**：论坛中提到的付费加密产品，功能覆盖资源加密、代码保护、构建优化等多个维度。
 
 - **Enigma Virtual Box（付费版）**：付费解锁完整加密和虚拟化功能。
@@ -77,7 +75,7 @@ Chronos Seal 可以挡住大部分小白，但**挡不住会 IDA 与二进制反
 | 工具 | 类型 | 加密深度 | 使用门槛 | 收费 |
 |------|------|----------|----------|------|
 | Chronos Seal | 原生层加密 | C++ 层 | 中（需 GitHub + Node.js） | 免费（MIT） |
-| 白箱 HakuBox VFS | VFS 封装 | JS 层 | 低（图形化） | 免费/付费 |
+| 白箱 HakuBox VFS | VFS 封装 | JS 层 | 低（图形化） | 免费 |
 | Encrypterator 3000 | 素材加密 | JS 层 | 中 | 免费 |
 | RPG Maker Binomorph | 资源打包 | 资源层 | 中 | Demo 限制 |
 | Enigma Virtual Box | EXE 打包 | 打包层 | 低 | 免费/付费 |
