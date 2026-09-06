@@ -51,7 +51,7 @@ GitHub Issues 是跟踪问题和讨论最直接的渠道，建议优先使用。
   ```bash
   gpg --keyserver keys.openpgp.org --recv-keys 7360A9A8B36BCA6D73B26D38DC22E64108B24CD3
 
-- 在线查看：访问 [keys.openpgp.org](keys.openpgp.org) 搜索 contact@crclare.top
+- 在线查看：访问 [keys.openpgp.org](https://keys.openpgp.org) 搜索 contact@crclare.top
 
 我发出的安全相关邮件都会使用该 GPG 私钥签名，你可以通过验证签名确认邮件来源的真实性，防止邮件被伪造或篡改。
 
