@@ -4,6 +4,8 @@
 
 如果你觉得 Chronos Seal 对你有帮助，可以通过爱发电自愿支持项目——这不是必须的，MIT 许可证已经保障了你自由使用的权利。
 
+> 如果你还没准备好赞助，点一个 Star 也是极大的支持。 —— 至少让我知道，我做的事有人在看。
+
 **爱发电主页**：[https://afdian.com/a/crclare](https://afdian.com/a/crclare)
 
 
