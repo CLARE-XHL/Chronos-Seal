@@ -59,6 +59,20 @@ Chronos Seal 是一个开源项目，目前没有设置漏洞赏金计划。但�
 为防止供应链投毒攻击（参考 XZ Utils 后门事件），本项目对高风险文件实施严格的 PR 审查流程。
 详细规则请参考 [CONTRIBUTING.md](https://github.com/CLARE-XHL/Chronos-Seal/blob/main/CONTRIBUTING.md)。
 
+### 高风险文件清单
+以下文件**任何变更（包含注释、换行、标点、格式调整，不豁免）**，PR 将进入 **48小时全员冻结审查期**：
+- `.github/workflows/build.yml` — CI构建流水线、vcpkg依赖、编译环境配置
+- `binding.gyp` — N‑API原生模块构建配置、链接库、编译标志
+- `src/decryptor.cc` — AES‑256‑CBC核心解密逻辑、N‑API接口、内存处理
+- 所有 Release 打包、产物上传相关脚本/工作流
+
+### 审查约束
+1. 冻结期间禁止 `force‑push` 重写PR历史；发生强制推送则重置48小时计时。
+2. 维护者本人提交的PR同样适用本规则，**禁止自我合并高风险文件**。
+3. 审查不只是阅读diff文本，必须本地编译，执行加密‑解密往返校验，验证二进制运行行为。
+
+> 普通变更：JS劫持层、文档、示例脚本、辅助工具，执行常规PR审核，不受48h冻结约束。
+
 ## 安全更新
 
 - 所有安全更新会发布在 [Releases](https://github.com/CLARE-XHL/Chronos-Seal/releases) 页面
