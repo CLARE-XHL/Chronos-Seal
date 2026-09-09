@@ -79,6 +79,10 @@ GitHub Issues 是跟踪问题和讨论最直接的渠道，建议优先使用。
 3. 提交 Pull Request 并描述改动内容
 4. 我会尽快 review
 
+> ⚠️ 安全审查提示：
+> 如果PR改动高风险文件：`.github/workflows/build.yml`、`binding.gyp`、`src/decryptor.cc`、Release打包相关脚本，会执行**48小时全员冻结审查**，即使仅修改注释、标点、换行也不豁免。
+ > JS劫持层、文档、示例脚本等普通变更执行常规审核。
+
 代码风格与现有代码保持一致即可，不需要担心严格的代码规范审查。
 
 
