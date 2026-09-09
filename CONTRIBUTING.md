@@ -32,6 +32,11 @@
 4. 如果修复了 Bug，请在 PR 描述中关联对应的 Issue 编号
 5. 提交前确认编译通过（本地或 GitHub Actions 验证）
 
+**⚠️ 安全审查提示：**
+如果PR改动高风险文件：`.github/workflows/build.yml`、`binding.gyp`、`src/decryptor.cc`、Release打包相关脚本，会执行**48小时全员冻结审查**，即使仅修改注释、标点、换行也不豁免。
+
+JS劫持层、文档、示例脚本等普通变更执行常规审核。
+
 **PR 描述建议包含：**
 
 - **改动内容**：你改了什么
