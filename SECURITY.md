@@ -52,6 +52,8 @@ Chronos Seal 重视每一个安全漏洞的发现和修复。如果你发现了�
 
 Chronos Seal 是一个开源项目，目前没有设置漏洞赏金计划。但我会在更新日志中致谢每一位报告漏洞的安全研究员。
 
+同时，你也可以参与关于PR的审查工作。
+
 ## 安全更新
 
 - 所有安全更新会发布在 [Releases](https://github.com/CLARE-XHL/Chronos-Seal/releases) 页面
