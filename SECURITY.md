@@ -54,6 +54,11 @@ Chronos Seal 是一个开源项目，目前没有设置漏洞赏金计划。但�
 
 同时，你也可以参与关于PR的审查工作。
 
+## 防御策略
+
+为防止供应链投毒攻击（参考 XZ Utils 后门事件），本项目对高风险文件实施严格的 PR 审查流程。
+详细规则请参考 [CONTRIBUTING.md](https://github.com/CLARE-XHL/Chronos-Seal/blob/main/CONTRIBUTING.md)。
+
 ## 安全更新
 
 - 所有安全更新会发布在 [Releases](https://github.com/CLARE-XHL/Chronos-Seal/releases) 页面
