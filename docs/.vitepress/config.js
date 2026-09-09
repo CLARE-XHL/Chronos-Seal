@@ -4,7 +4,15 @@ export default {
   base: '/',
   lang: 'zh-CN',
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }]
+    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    // Google Analytics (gtag.js)
+    ['script', { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-KVE03FKWDV' }],
+    ['script', {}, `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KVE03FKWDV');
+    `]
   ],
   themeConfig: {
     siteTitle: 'Chronos Seal',
