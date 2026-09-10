@@ -9,7 +9,7 @@
 
 - ✅ 已安装 Node.js（[nodejs.org](https://nodejs.org) 下载 LTS 版本）
 
-> 目前Node.js已对Windows 7停止了支持，无法使用高版本
+> 目前Node.js已对Windows 7停止了支持，无法使用高版本，建议使用V13.14.0，其他版本的Windows用户正常下载最新版即可
 
 - ✅ 已完成 RPG Maker 部署（生成了包含 `www/` 目录的发行包）
 - ✅ 已从云端编译下载 `encrypt_config.json`
