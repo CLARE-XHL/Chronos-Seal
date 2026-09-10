@@ -8,6 +8,9 @@
 在开始加密之前，请确认以下内容：
 
 - ✅ 已安装 Node.js（[nodejs.org](https://nodejs.org) 下载 LTS 版本）
+
+> 目前Node.js已对Windows 7停止了支持，无法使用高版本
+
 - ✅ 已完成 RPG Maker 部署（生成了包含 `www/` 目录的发行包）
 - ✅ 已从云端编译下载 `encrypt_config.json`
 - ✅ 已将 CS 发行包中的 `encrypt_assets.bat` 和 `encrypt_assets.js` 准备好
