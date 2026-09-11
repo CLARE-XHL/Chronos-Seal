@@ -102,5 +102,7 @@ Chronos Seal 不追求绝对不可破解——那在客户端环境中不存在�
 - 项目地址：[https://github.com/CLARE-XHL/Chronos-Seal](https://github.com/CLARE-XHL/Chronos-Seal)
 - 文档站：[https://docs.crclare.top](https://docs.crclare.top)
 
+[代码签名政策请见 CODE_SIGNING.md](./CODE_SIGNING.md)
+
 
 ⭐ 如果这个项目对你有帮助，请给主仓库一个 Star！
