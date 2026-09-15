@@ -16,9 +16,7 @@ export default defineConfig({
     `]
   ],
 
-  // ==========================================
-  // 多语言配置 (i18n) - 预留英文
-  // ==========================================
+  // 多语言配置 (预留英文)
   locales: {
     root: {
       label: '简体中文',
@@ -38,11 +36,12 @@ export default defineConfig({
   themeConfig: {
     siteTitle: 'Chronos Seal',
     
-    // 顶部导航栏
+    // 顶部导航栏：增加首页/指南链接
     nav: [
-      { text: 'Basic 版', link: '/basic/getting-started' },
-      { text: 'GUI 版', link: '/gui/getting-started' },
-      { text: 'Pro 版', link: '/pro/getting-started' },
+      { text: '指南', link: '/guide/getting-started' },
+      { text: 'Basic 版', link: '/basic/preparation' },
+      { text: 'GUI 版', link: '/gui/preparation' },
+      { text: 'Pro 版', link: '/pro/preparation' },
       { 
         text: '相关链接', 
         items: [
@@ -52,12 +51,10 @@ export default defineConfig({
       }
     ],
 
-    // 社交链接
     socialLinks: [
       { icon: 'github', link: 'https://github.com/CLARE-XHL/Chronos-Seal' }
     ],
 
-    // 页脚与编辑链接
     lastUpdated: true,
     editLink: {
       pattern: 'https://github.com/CLARE-XHL/Chronos-Seal/edit/main/docs/:path',
@@ -69,16 +66,25 @@ export default defineConfig({
     },
 
     // ==========================================
-    // 侧边栏配置
+    // 侧边栏配置：按你的要求精准调整
     // ==========================================
     sidebar: {
-      // 【Basic 版】—— 核心工作区
+      // 【全局指南】—— 首页链接，用于版本对比与选择
+      '/guide/': [
+        {
+          text: '版本选择',
+          items: [
+            { text: '快速开始 (对比与缺陷)', link: '/guide/getting-started' }
+          ]
+        }
+      ],
+
+      // 【Basic 版】—— 删除了前言，快速开始改为准备工作
       '/basic/': [
         {
           text: '指南',
           items: [
-            { text: '前言', link: '/basic/introduction' },
-            { text: '快速开始', link: '/basic/getting-started' },
+            { text: '准备工作', link: '/basic/preparation' },
             { text: '网络环境', link: '/basic/network' }
           ]
         },
@@ -105,22 +111,22 @@ export default defineConfig({
         }
       ],
 
-      // 【GUI 版】—— 快速开始占位
+      // 【GUI 版】—— 只有准备工作
       '/gui/': [
         {
           text: 'GUI 版',
           items: [
-            { text: '快速开始', link: '/gui/getting-started' }
+            { text: '准备工作', link: '/gui/preparation' }
           ]
         }
       ],
 
-      // 【Pro 版】—— 快速开始占位
+      // 【Pro 版】—— 只有准备工作
       '/pro/': [
         {
           text: 'Pro 版',
           items: [
-            { text: '快速开始', link: '/pro/getting-started' }
+            { text: '准备工作', link: '/pro/preparation' }
           ]
         }
       ]
